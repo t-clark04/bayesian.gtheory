@@ -56,21 +56,6 @@ Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
 sample_data <- data.frame(Person, Item, Occasion, Score)
 
 results <- bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 4, cores = 4)
-#> Compiling Stan program...
-#> WARNING: Rtools is required to build R packages, but is not currently installed.
-#> 
-#> Please download and install the appropriate version of Rtools for 4.4.0 from
-#> https://cran.r-project.org/bin/windows/Rtools/.
-#> Trying to compile a simple C file
-#> WARNING: Rtools is required to build R packages, but is not currently installed.
-#> 
-#> Please download and install the appropriate version of Rtools for 4.4.0 from
-#> https://cran.r-project.org/bin/windows/Rtools/.
-#> Start sampling
-#> Warning: There were 2 divergent transitions after warmup. See
-#> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
-#> to find out why this is a problem and how to eliminate them.
-#> Warning: Examine the pairs() plot to diagnose sampling problems
 ```
 
 ``` r
@@ -79,20 +64,20 @@ kable(results)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.5) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.000 |  0.093 |       0.614 |       0.055 |
-|      2 |          1 |       0.000 |  0.139 |       0.728 |       0.118 |
-|      3 |          1 |       0.001 |  0.168 |       0.781 |       0.160 |
-|      4 |          1 |       0.001 |  0.189 |       0.815 |       0.188 |
-|      5 |          1 |       0.001 |  0.205 |       0.833 |       0.211 |
-|      1 |          2 |       0.000 |  0.127 |       0.698 |       0.097 |
-|      2 |          2 |       0.001 |  0.194 |       0.798 |       0.185 |
-|      3 |          2 |       0.001 |  0.237 |       0.842 |       0.237 |
-|      4 |          2 |       0.001 |  0.268 |       0.867 |       0.273 |
-|      5 |          2 |       0.001 |  0.294 |       0.883 |       0.299 |
-|      1 |          3 |       0.000 |  0.146 |       0.739 |       0.126 |
-|      2 |          3 |       0.001 |  0.225 |       0.830 |       0.220 |
-|      3 |          3 |       0.001 |  0.276 |       0.870 |       0.278 |
-|      4 |          3 |       0.001 |  0.314 |       0.890 |       0.318 |
-|      5 |          3 |       0.001 |  0.343 |       0.904 |       0.351 |
+|      1 |          1 |       0.000 |  0.090 |       0.612 |       0.057 |
+|      2 |          1 |       0.000 |  0.134 |       0.729 |       0.116 |
+|      3 |          1 |       0.000 |  0.165 |       0.785 |       0.158 |
+|      4 |          1 |       0.000 |  0.186 |       0.815 |       0.190 |
+|      5 |          1 |       0.001 |  0.202 |       0.836 |       0.212 |
+|      1 |          2 |       0.000 |  0.123 |       0.701 |       0.098 |
+|      2 |          2 |       0.001 |  0.186 |       0.802 |       0.182 |
+|      3 |          2 |       0.001 |  0.230 |       0.846 |       0.236 |
+|      4 |          2 |       0.001 |  0.260 |       0.872 |       0.274 |
+|      5 |          2 |       0.001 |  0.285 |       0.887 |       0.302 |
+|      1 |          3 |       0.000 |  0.142 |       0.739 |       0.123 |
+|      2 |          3 |       0.001 |  0.217 |       0.833 |       0.218 |
+|      3 |          3 |       0.001 |  0.266 |       0.871 |       0.278 |
+|      4 |          3 |       0.001 |  0.305 |       0.893 |       0.321 |
+|      5 |          3 |       0.001 |  0.333 |       0.908 |       0.349 |
 
 How awesome is that!
