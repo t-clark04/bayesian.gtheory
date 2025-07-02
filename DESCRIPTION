@@ -1,14 +1,19 @@
 Package: bayesian.gtheory
-Title: What the Package Does (One Line, Title Case)
+Title: Execute Bayesian D-Studies from Generalizability Theory
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Tommy", "Clark", , "tclark23@nd.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "https://orcid.org/0009-0000-3560-6166"))
+Description: Provides a function for calculating point estimates and credible 
+    intervals, as well as returning probability statements for reliability 
+    coefficients in a random, fully crossed two-facet study design.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
+Imports:
+    dplyr,
+    stats,
+    brms
 URL: https://github.com/t-clark04/bayesian.gtheory
 BugReports: https://github.com/t-clark04/bayesian.gtheory/issues
