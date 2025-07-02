@@ -46,9 +46,25 @@ bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.face
   }
 
   # Making sure the user numeric data for the scores column.
-  #if (!class(data$col.scores) %in% c("integer", "numeric")) {
-  #  stop("Scores data must be numeric!")
-  #}
+  if (!is.numeric(data[[col.scores]])) {
+    stop("Scores data must be numeric!")
+  }
+
+  # Making sure the user specified positive integers for the two sequences.
+  suppressWarnings(
+    if (any(is.logical(seq1)) | any(is.na(as.integer(seq1))) | any(seq1 != as.integer(seq1)) | any(as.integer(seq1) <= 0)) {
+      stop("'seq1' must only contain positive integers.", call. = F)
+    }
+    else if (any(is.logical(seq2)) | any(is.na(as.integer(seq2))) | any(seq2 != as.integer(seq2)) | any(as.integer(seq2) <= 0)) {
+      stop("'seq2' must only contain positive integers.", call. = F)
+    }
+  )
+
+  # Making sure the number of rounding digits is a positive integer as well.
+  suppressWarnings(if (is.logical(rounded) | is.na(as.integer(rounded)) | rounded != as.integer(rounded) | as.integer(rounded) <= 0) {
+    stop("'rounded' must be a positive integer.", call. = F)
+  })
+
 
   # Renaming the columns to make them easier to work with.
   data <- data %>%
@@ -64,8 +80,7 @@ bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.face
   suppressWarnings(var_df <- samples[2:8])
 
   # Calculating variance components.
-  var_df <- samples %>%
-    dplyr::select(tidyselect::matches("^(sd_|sigma)")) %>%
+  var_df <- var_df %>%
     dplyr::mutate(
       var_Person = sd_Person__Intercept^2,
       var_Item = sd_Item__Intercept^2,
