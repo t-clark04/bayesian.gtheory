@@ -33,7 +33,7 @@ devtools::install_github("t-clark04/bayesian.gtheory")
 
 Let's say you did a study in which you gave five different students a test with 3 different items on it, and you gave them that test on two separate occasions. You want to know the reliability with which you could generalize to each student's true score by averaging over x number of items and y number of occasions. This is called a reliability analysis. In regular (i.e. frequentist) Generalizability Theory, the reliability of such a generalization is given as a point estimate -- the G-coefficient (or phi) for absolute agreement. However, what if you wanted the reliability to be given as an interval instead? And what if you wanted to know the probability of the G-coefficient being above a certain threshold for your study? With frequentist G-theory, that's impossible, but not with Bayesian! The ``bayesian_dstudy()`` function calculates the G-coefficient for each combination of the two facets specified by the user, returning the result as both a point estimate (the median of posterior distribution) and a credible interval (with quantiles specified by the user). Plus, the outputted data frame contains an explicit probability statement for each facet combination, specifying the probability of the G-coefficient being above an inputted threshold for that particular study design! 
 
-```{r example}
+```{r, echo = FALSE}
 library(bayesian.gtheory)
 
 Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
@@ -43,8 +43,10 @@ Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
 
 sample_data <- data.frame(Person, Item, Occasion, Score)
 
-results <- bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+results <- bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 4, cores = 4)
+```
 
+``` {r}
 kable(results)
 ```
 How awesome is that!
