@@ -26,27 +26,47 @@
 #'Occasion <- c(rep(c(1,1,1,2,2,2), 5))
 #'Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
 #'sample_data <- data.frame(Person, Item, Occasion, Score)
-#'bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion",
-#'seq1 = seq(1,5,1), seq2 = (1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+#'bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
 bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7,
                             rounded = 3, probs = c(0.025, 0.975), warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
+
+  # Making sure the user entered real column names.
+  if (!(col.scores) %in% colnames(data)) {
+    stop(paste0("'", col.scores, "'", " is not a column in the data frame. Please check spelling."), call. = F)
+  }
+  else if (!(col.subjects) %in% colnames(data)) {
+    stop(paste0("'", col.subjects, "'", " is not a column in the data frame. Please check spelling."), call. = F)
+  }
+  else if (!(col.facet1) %in% colnames(data)) {
+    stop(paste0("'", col.facet1, "'", " is not a column in the data frame. Please check spelling."), call. = F)
+  }
+  else if (!(col.facet2) %in% colnames(data)) {
+    stop(paste0("'", col.facet2, "'", " is not a column in the data frame. Please check spelling."), call. = F)
+  }
+
+  # Making sure the user numeric data for the scores column.
+  #if (!class(data$col.scores) %in% c("integer", "numeric")) {
+  #  stop("Scores data must be numeric!")
+  #}
+
+  # Renaming the columns to make them easier to work with.
   data <- data %>%
-    rename("Score" = col.scores, "Person" = col.subjects, "Item" = col.facet1, "Occasion" = col.facet2)
+    dplyr::rename("Score" = col.scores, "Person" = col.subjects, "Item" = col.facet1, "Occasion" = col.facet2)
 
-
+  # Setting the formula and running the brms model according to the user's specifications.
   formula1 <- Score ~ (1|Person) + (1|Item) + (1|Occasion) + (1|Person:Item) + (1|Person:Occasion) + (1|Item:Occasion)
-  model <- brm(formula = formula1, data = data, family = gaussian(), warmup = warmup, prior = prior,
+  model <- brms::brm(formula = formula1, data = data, family = gaussian(), warmup = warmup,
                iter = iter, chains = chains, cores = cores, control = list(adapt_delta = adapt_delta,
                                                                            max_treedepth = max_treedepth))
+  # Taking samples from the posterior distribution and selecting only the columns I need.
+  samples <- brms::as_draws_df(model)
+  suppressWarnings(var_df <- samples[2:8])
 
-  samples <- as_draws_df(model)
-
-  var_df <- samples[2:8]
-
+  # Calculating variance components.
   var_df <- samples %>%
-    select(matches("^(sd_|sigma)")) %>%
-    mutate(
+    dplyr::select(tidyselect::matches("^(sd_|sigma)")) %>%
+    dplyr::mutate(
       var_Person = sd_Person__Intercept^2,
       var_Item = sd_Item__Intercept^2,
       var_Occasion = sd_Occasion__Intercept^2,
@@ -55,10 +75,11 @@ bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.face
       var_Item_Occasion = `sd_Item:Occasion__Intercept`^2,
       var_Error = sigma^2
     ) %>%
-    select(
-      starts_with("var")
+    dplyr::select(
+      tidyselect::starts_with("var")
     )
 
+  # Laying out the final data frame.
   final_df <- expand.grid(seq1, seq2)
   colnames(final_df) <- c(paste0("n_", col.facet1), paste0("n_", col.facet2))
   final_df$Lower_Bound <- 0
@@ -66,11 +87,15 @@ bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.face
   final_df$Upper_Bound <- 0
   final_df$Placeholder <- 0
 
+  # Iterate through each combination of facet values and calculate the median
+  # and desired quantiles for the reliability coefficients. Then, calculate the
+  # probability that the G-coefficient is greater than the inputted threshold.
+  # Put all of these into the final data frame we created before.
   for (i in seq(1, nrow(final_df))) {
     n_i = final_df[i,1]
     n_o = final_df[i,2]
     var_df <- var_df %>%
-      mutate(
+      dplyr::mutate(
         new_Person = var_Person,
         new_Item = var_Item/n_i,
         new_Occasion = var_Occasion/n_o,
@@ -81,10 +106,10 @@ bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.face
         G_coef = new_Person/(new_Person + new_Item + new_Occasion + new_Person_Item +
                                new_Person_Occasion + new_Item_Occasion + new_Error)
       )
-    ci <- quantile(var_df$G_coef, probs = probs)
+    ci <- stats::quantile(var_df$G_coef, probs = probs)
     lower <- unname(ci[1])
     final_df$Lower_Bound[i] <- round(lower, rounded)
-    final_df$Median[i] <- round(median(var_df$G_coef), rounded)
+    final_df$Median[i] <- round(stats::median(var_df$G_coef), rounded)
     upper <- unname(ci[2])
     final_df$Upper_Bound[i] <- round(upper, rounded)
     final_df$Placeholder[i] <- round(mean(var_df$G_coef > threshold), rounded)
