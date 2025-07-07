@@ -35,7 +35,7 @@ analysis.
 
 In regular (i.e. frequentist) Generalizability Theory, the result of
 such a reliability analysis is given as a point estimate – the
-G-coefficient (or phi) for absolute agreement. However, what if you
+G-coefficient for absolute agreement (or $`\Phi`$). However, what if you
 wanted the reliability to be given as an interval instead? And what if
 you wanted to know the probability of the G-coefficient being above a
 certain threshold for your study? With frequentist G-theory, that’s
@@ -50,8 +50,8 @@ statement for each facet combination, specifying the probability of the
 G-coefficient being above an inputted threshold for that particular
 combination! The user even has the option of specifying prior
 distributions for any or all of the variance components through the
-`set_prior()` function in `brms`, but the author decided to make this
-example simple by keeping the default null priors.
+`set_prior()` function in `brms`, but the author decided to keep this
+example simple by leaving the default null priors.
 
 ``` r
 # Loading in the package
@@ -76,20 +76,20 @@ kable(results)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.5) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.000 |  0.093 |       0.629 |       0.060 |
-|      2 |          1 |       0.000 |  0.139 |       0.743 |       0.120 |
-|      3 |          1 |       0.001 |  0.168 |       0.794 |       0.162 |
-|      4 |          1 |       0.001 |  0.188 |       0.823 |       0.192 |
-|      5 |          1 |       0.001 |  0.203 |       0.842 |       0.212 |
-|      1 |          2 |       0.000 |  0.127 |       0.709 |       0.098 |
-|      2 |          2 |       0.001 |  0.192 |       0.807 |       0.183 |
-|      3 |          2 |       0.001 |  0.235 |       0.851 |       0.238 |
-|      4 |          2 |       0.001 |  0.266 |       0.875 |       0.274 |
-|      5 |          2 |       0.001 |  0.289 |       0.890 |       0.300 |
-|      1 |          3 |       0.000 |  0.146 |       0.747 |       0.124 |
-|      2 |          3 |       0.001 |  0.223 |       0.838 |       0.221 |
-|      3 |          3 |       0.001 |  0.275 |       0.875 |       0.279 |
-|      4 |          3 |       0.001 |  0.312 |       0.895 |       0.322 |
-|      5 |          3 |       0.001 |  0.340 |       0.909 |       0.353 |
+|      1 |          1 |       0.000 |  0.097 |       0.622 |       0.061 |
+|      2 |          1 |       0.000 |  0.145 |       0.733 |       0.124 |
+|      3 |          1 |       0.000 |  0.176 |       0.786 |       0.168 |
+|      4 |          1 |       0.001 |  0.198 |       0.817 |       0.199 |
+|      5 |          1 |       0.001 |  0.214 |       0.838 |       0.220 |
+|      1 |          2 |       0.000 |  0.131 |       0.705 |       0.103 |
+|      2 |          2 |       0.001 |  0.200 |       0.803 |       0.191 |
+|      3 |          2 |       0.001 |  0.245 |       0.846 |       0.246 |
+|      4 |          2 |       0.001 |  0.279 |       0.870 |       0.282 |
+|      5 |          2 |       0.001 |  0.303 |       0.886 |       0.309 |
+|      1 |          3 |       0.000 |  0.149 |       0.741 |       0.130 |
+|      2 |          3 |       0.001 |  0.230 |       0.835 |       0.229 |
+|      3 |          3 |       0.001 |  0.284 |       0.871 |       0.290 |
+|      4 |          3 |       0.001 |  0.323 |       0.892 |       0.330 |
+|      5 |          3 |       0.001 |  0.353 |       0.906 |       0.359 |
 
 How awesome is that!
