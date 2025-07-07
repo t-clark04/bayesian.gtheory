@@ -47,7 +47,10 @@ distribution) and a credible interval (with quantiles specified by the
 user). Plus, the outputted data frame contains an explicit probability
 statement for each facet combination, specifying the probability of the
 G-coefficient being above an inputted threshold for that particular
-combination!
+combination! The user even has the option of specifying prior
+distributions for any or all of the variance components through the
+`set_prior()` function in `brms`, but the author decided to make this
+example simple by keeping the default null priors.
 
 ``` r
 # Loading in the package
@@ -72,20 +75,20 @@ kable(results)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.5) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.000 |  0.093 |       0.632 |       0.060 |
-|      2 |          1 |       0.000 |  0.138 |       0.744 |       0.122 |
-|      3 |          1 |       0.001 |  0.167 |       0.795 |       0.162 |
-|      4 |          1 |       0.001 |  0.186 |       0.824 |       0.190 |
-|      5 |          1 |       0.001 |  0.203 |       0.845 |       0.214 |
-|      1 |          2 |       0.000 |  0.126 |       0.713 |       0.102 |
-|      2 |          2 |       0.001 |  0.192 |       0.811 |       0.186 |
-|      3 |          2 |       0.001 |  0.234 |       0.854 |       0.239 |
-|      4 |          2 |       0.001 |  0.264 |       0.878 |       0.272 |
-|      5 |          2 |       0.001 |  0.288 |       0.893 |       0.300 |
-|      1 |          3 |       0.000 |  0.143 |       0.750 |       0.124 |
-|      2 |          3 |       0.001 |  0.222 |       0.839 |       0.224 |
-|      3 |          3 |       0.001 |  0.273 |       0.877 |       0.279 |
-|      4 |          3 |       0.001 |  0.310 |       0.898 |       0.322 |
-|      5 |          3 |       0.001 |  0.338 |       0.912 |       0.355 |
+|      1 |          1 |       0.000 |  0.094 |       0.619 |       0.059 |
+|      2 |          1 |       0.000 |  0.140 |       0.738 |       0.119 |
+|      3 |          1 |       0.001 |  0.168 |       0.791 |       0.158 |
+|      4 |          1 |       0.001 |  0.188 |       0.818 |       0.189 |
+|      5 |          1 |       0.001 |  0.205 |       0.838 |       0.213 |
+|      1 |          2 |       0.000 |  0.128 |       0.705 |       0.098 |
+|      2 |          2 |       0.001 |  0.193 |       0.805 |       0.181 |
+|      3 |          2 |       0.001 |  0.238 |       0.848 |       0.238 |
+|      4 |          2 |       0.001 |  0.267 |       0.874 |       0.276 |
+|      5 |          2 |       0.001 |  0.292 |       0.890 |       0.305 |
+|      1 |          3 |       0.000 |  0.147 |       0.741 |       0.123 |
+|      2 |          3 |       0.001 |  0.224 |       0.835 |       0.217 |
+|      3 |          3 |       0.001 |  0.276 |       0.873 |       0.282 |
+|      4 |          3 |       0.001 |  0.315 |       0.894 |       0.326 |
+|      5 |          3 |       0.001 |  0.343 |       0.908 |       0.356 |
 
 How awesome is that!

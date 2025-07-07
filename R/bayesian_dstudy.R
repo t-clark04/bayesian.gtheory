@@ -10,6 +10,7 @@
 #' @param threshold A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.
 #' @param rounded The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.
 #' @param probs A list containing two quantiles (between 0 and 1) at which to evaluate the reliability coefficients. Set to c(0.025, 0.975) by default.
+#' @param prior An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet1) + (1|col.facet2) + (1|col.subjects:col.facet1) + (1|col.subjects:col.facet2) + (1|col.facet1:col.facet2)". Type ?brms::set_prior in the console for more information. NULL by default.
 #' @param warmup Number of iterations to use per chain as the burn-in period for MCMC sampling. 2000 by default.
 #' @param iter Number of total iterations per chain (including warmup). 5000 by default.
 #' @param chains Number of Markov chains. 4 by default.
@@ -28,7 +29,7 @@
 #'sample_data <- data.frame(Person, Item, Occasion, Score)
 #'bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
 bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7,
-                            rounded = 3, probs = c(0.025, 0.975), warmup = 2000, iter = 5000, chains = 4,
+                            rounded = 3, probs = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
 
   # Making sure the user entered real column names.
@@ -65,16 +66,12 @@ bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.face
     stop("'rounded' must be a positive integer.", call. = F)
   })
 
-
-  # Renaming the columns to make them easier to work with.
-  data <- data %>%
-    dplyr::rename("Score" = col.scores, "Person" = col.subjects, "Item" = col.facet1, "Occasion" = col.facet2)
-
   # Setting the formula and running the brms model according to the user's specifications.
-  formula1 <- Score ~ (1|Person) + (1|Item) + (1|Occasion) + (1|Person:Item) + (1|Person:Occasion) + (1|Item:Occasion)
-  model <- brms::brm(formula = formula1, data = data, family = gaussian(), warmup = warmup,
+  formula1 <- glue::glue("{col.scores} ~ (1|{col.subjects}) + (1|{col.facet1}) + (1|{col.facet2}) + (1|{col.subjects}:{col.facet1}) + (1|{col.subjects}:{col.facet2}) + (1|{col.facet1}:{col.facet2})")
+  model <- brms::brm(formula = formula1, data = data, family = gaussian(), prior = prior, warmup = warmup,
                iter = iter, chains = chains, cores = cores, control = list(adapt_delta = adapt_delta,
                                                                            max_treedepth = max_treedepth))
+
   # Taking samples from the posterior distribution and selecting only the columns I need.
   samples <- brms::as_draws_df(model)
   suppressWarnings(var_df <- samples[2:8])
@@ -82,12 +79,12 @@ bayesian_dstudy <- function(data, col.scores, col.subjects, col.facet1, col.face
   # Calculating variance components.
   var_df <- var_df %>%
     dplyr::mutate(
-      var_Person = sd_Person__Intercept^2,
-      var_Item = sd_Item__Intercept^2,
-      var_Occasion = sd_Occasion__Intercept^2,
-      var_Person_Item = `sd_Person:Item__Intercept`^2,
-      var_Person_Occasion = `sd_Person:Occasion__Intercept`^2,
-      var_Item_Occasion = `sd_Item:Occasion__Intercept`^2,
+      var_Person = .[[glue::glue("sd_{col.subjects}__Intercept")]]^2,
+      var_Item = .[[glue::glue("sd_{col.facet1}__Intercept")]]^2,
+      var_Occasion = .[[glue::glue("sd_{col.facet2}__Intercept")]]^2,
+      var_Person_Item = .[[glue::glue("sd_{col.subjects}:{col.facet1}__Intercept")]]^2,
+      var_Person_Occasion = .[[glue::glue("sd_{col.subjects}:{col.facet2}__Intercept")]]^2,
+      var_Item_Occasion = .[[glue::glue("sd_{col.facet1}:{col.facet2}__Intercept")]]^2,
       var_Error = sigma^2
     ) %>%
     dplyr::select(

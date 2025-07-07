@@ -15,6 +15,7 @@ bayesian_dstudy(
   threshold = 0.7,
   rounded = 3,
   probs = c(0.025, 0.975),
+  prior = NULL,
   warmup = 2000,
   iter = 5000,
   chains = 4,
@@ -43,6 +44,8 @@ bayesian_dstudy(
 \item{rounded}{The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.}
 
 \item{probs}{A list containing two quantiles (between 0 and 1) at which to evaluate the reliability coefficients. Set to c(0.025, 0.975) by default.}
+
+\item{prior}{An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet1) + (1|col.facet2) + (1|col.subjects:col.facet1) + (1|col.subjects:col.facet2) + (1|col.facet1:col.facet2)". Type ?brms::set_prior in the console for more information. NULL by default.}
 
 \item{warmup}{Number of iterations to use per chain as the burn-in period for MCMC sampling. 2000 by default.}
 
