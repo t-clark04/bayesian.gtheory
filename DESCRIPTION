@@ -4,9 +4,10 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Tommy", "Clark", , "tclark23@nd.edu", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0009-0000-3560-6166"))
-Description: Provides a function for calculating point estimates and credible 
+Description: Provides functions for calculating point estimates and credible 
     intervals, as well as returning probability statements for reliability 
-    coefficients in a random, fully crossed two-facet study design.
+    coefficients in a random, fully crossed study design with either one facet
+    or two facets.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
