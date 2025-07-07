@@ -8,7 +8,7 @@
 #' @param threshold A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.
 #' @param rounded The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.
 #' @param probs A list containing two quantiles (between 0 and 1) at which to evaluate the reliability coefficients. Set to c(0.025, 0.975) by default.
-#' @param prior An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet1) + (1|col.facet2) + (1|col.subjects:col.facet1) + (1|col.subjects:col.facet2) + (1|col.facet1:col.facet2)". Type ?brms::set_prior in the console for more information. NULL by default.
+#' @param prior An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet)". Type ?brms::set_prior in the console for more information. NULL by default.
 #' @param warmup Number of iterations to use per chain as the burn-in period for MCMC sampling. 2000 by default.
 #' @param iter Number of total iterations per chain (including warmup). 5000 by default.
 #' @param chains Number of Markov chains. 4 by default.
@@ -24,7 +24,7 @@
 #'Item <- c(rep(c(1,2,3), 5))
 #'Score <- c(2,6,7,4,5,6,5,5,4,5,9,8,4,3,5)
 #'sample_data <- data.frame(Person, Item, Score)
-#'bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet = "Item", seq = seq(1,5,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+#'bayesian_dstudy1(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet = "Item", seq = seq(1,5,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
 bayesian_dstudy1 <- function(data, col.scores, col.subjects, col.facet, seq, threshold = 0.7,
                             rounded = 3, probs = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
@@ -36,7 +36,7 @@ bayesian_dstudy1 <- function(data, col.scores, col.subjects, col.facet, seq, thr
   else if (!(col.subjects) %in% colnames(data)) {
     stop(paste0("'", col.subjects, "'", " is not a column in the data frame. Please check spelling."), call. = F)
   }
-  else if (!(col.facet1) %in% colnames(data)) {
+  else if (!(col.facet) %in% colnames(data)) {
     stop(paste0("'", col.facet1, "'", " is not a column in the data frame. Please check spelling."), call. = F)
   }
 

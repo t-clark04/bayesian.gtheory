@@ -39,7 +39,7 @@ bayesian_dstudy1(
 
 \item{probs}{A list containing two quantiles (between 0 and 1) at which to evaluate the reliability coefficients. Set to c(0.025, 0.975) by default.}
 
-\item{prior}{An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet1) + (1|col.facet2) + (1|col.subjects:col.facet1) + (1|col.subjects:col.facet2) + (1|col.facet1:col.facet2)". Type ?brms::set_prior in the console for more information. NULL by default.}
+\item{prior}{An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet)". Type ?brms::set_prior in the console for more information. NULL by default.}
 
 \item{warmup}{Number of iterations to use per chain as the burn-in period for MCMC sampling. 2000 by default.}
 
@@ -64,5 +64,5 @@ Person <- c(rep(1, 3), rep(2,3), rep(3,3), rep(4,3), rep(5,3))
 Item <- c(rep(c(1,2,3), 5))
 Score <- c(2,6,7,4,5,6,5,5,4,5,9,8,4,3,5)
 sample_data <- data.frame(Person, Item, Score)
-bayesian_dstudy(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet = "Item", seq = seq(1,5,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+bayesian_dstudy1(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet = "Item", seq = seq(1,5,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
 }
