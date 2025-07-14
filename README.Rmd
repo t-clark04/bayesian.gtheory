@@ -60,4 +60,4 @@ results <- bayesian_dstudy2(data = sample_data, col.scores = "Score", col.subjec
 kable(results)
 ```
 
-How awesome is that!
+How cool is that!
