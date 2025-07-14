@@ -18,6 +18,7 @@ Imports:
     brms,
     magrittr,
     tidyselect,
-    glue
+    glue,
+    cmdstanr
 URL: https://github.com/t-clark04/bayesian.gtheory
 BugReports: https://github.com/t-clark04/bayesian.gtheory/issues
