@@ -60,8 +60,8 @@ bayesian_dstudy1 <- function(data, col.scores, col.subjects, col.facet, seq, thr
   # Setting the formula and running the brms model according to the user's specifications.
   formula1 <- glue::glue("{col.scores} ~ (1|{col.subjects}) + (1|{col.facet})")
   model <- brms::brm(formula = formula1, data = data, family = gaussian(), prior = prior, warmup = warmup,
-                     iter = iter, chains = chains, cores = cores, threads = brms::threading(2), backend = "cmdstanr", control = list(adapt_delta = adapt_delta,
-                                                                                 max_treedepth = max_treedepth))
+                     iter = iter, chains = chains, cores = cores, threads = brms::threading(2), backend = "cmdstanr",
+                     refresh = 100, control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth))
 
   # Taking samples from the posterior distribution and selecting only the columns I need.
   samples <- brms::as_draws_df(model)
