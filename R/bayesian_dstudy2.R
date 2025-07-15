@@ -67,7 +67,7 @@ bayesian_dstudy2 <- function(data, col.scores, col.subjects, col.facet1, col.fac
   })
 
   # Setting the formula and running the brms model according to the user's specifications.
-  formula1 <- glue::glue("{col.scores} ~ (1|{col.subjects}) + (1|{col.facet1}) + (1|{col.facet2}) + (1|{col.subjects}:{col.facet1}) + (1|{col.subjects}:{col.facet2}) + (1|{col.facet1}:{col.facet2})")
+  formula1 <- glue::glue("`{col.scores}` ~ (1|`{col.subjects}`) + (1|`{col.facet1}`) + (1|`{col.facet2}`) + (1|`{col.subjects}`:`{col.facet1}`) + (1|`{col.subjects}`:`{col.facet2}`) + (1|`{col.facet1}`:`{col.facet2}`)")
   model <- brms::brm(formula = formula1, data = data, family = gaussian(), prior = prior, warmup = warmup,
                iter = iter, chains = chains, cores = cores, threads = brms::threading(2),
                backend = "cmdstanr", control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth))
