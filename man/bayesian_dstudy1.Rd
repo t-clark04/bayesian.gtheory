@@ -47,7 +47,7 @@ bayesian_dstudy1(
 
 \item{chains}{Number of Markov chains. 4 by default.}
 
-\item{cores}{Number of cores to use when executing chains in parallel. 4 by default.}
+\item{cores}{Number of cores to use when executing chains in parallel. 4 by default. Note: The number of threads is set to 2 by default and cannot be changed. The number of cores times the number of threads should not exceed the number of logical CPU cores in your operating system. Adjust this parameter accordingly! To check how many logical CPU cores you have, run parallel::detectCores() in the console.}
 
 \item{adapt_delta}{A value between 0 and 1. A larger value slows down the sampler but decreases the number of divergent transitions. 0.995 by default.}
 
