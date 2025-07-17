@@ -1,9 +1,9 @@
 #' Execute a One-Faceted Bayesian D-Study
 #'
 #' @param data A data frame containing data from a random, fully crossed one-facet design. Must have one or more columns for metrics of interest, one column for labeling subjects, and one column for labeling the facet.
-#' @param col.scores The name of the column containing the metric of interest (i.e. scores, readings, etc.). Enter as a string.
-#' @param col.subjects The name of the column containing the labels for the subjects. Enter as a string.
-#' @param col.facet The name of the column containing the labels for the facet. Enter as a string.
+#' @param col.scores The name of the column containing the metric of interest (i.e. scores, readings, etc.). Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.
+#' @param col.subjects The name of the column containing the labels for the subjects. Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.
+#' @param col.facet The name of the column containing the labels for the facet. Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.
 #' @param seq A sequence of integers defining the interval at which to test the facet. Enter a vector, or use the seq() function directly.
 #' @param threshold A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.
 #' @param rounded The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.

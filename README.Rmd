@@ -61,3 +61,12 @@ kable(results)
 ```
 
 How cool is that!
+
+Note: Column names passed into the function must follow C++ naming conventions 
+(i.e. only letters, numbers, or underscores; no spaces or hyphens!). Furthermore, 
+the number of threads used for within-chain parallelization is set to 2 by 
+default and cannot be changed. In general, the number of `cores` multiplied by 
+the number of `threads` should not exceed the number of logical CPU cores in 
+your operating system. Adjust the `cores` parameter accordingly! To check how 
+many logical cores your operating system has, run parallel::detectCores()
+in the console.

@@ -27,13 +27,13 @@ bayesian_dstudy2(
 \arguments{
 \item{data}{A data frame containing data from a random, fully crossed two-facet design. Must have one or more columns for metrics of interest, one column for labeling subjects, and two columns for labeling facets.}
 
-\item{col.scores}{The name of the column containing the metric of interest (i.e. scores, readings, etc.). Enter as a string.}
+\item{col.scores}{The name of the column containing the metric of interest (i.e. scores, readings, etc.). Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.}
 
-\item{col.subjects}{The name of the column containing the labels for the subjects. Enter as a string.}
+\item{col.subjects}{The name of the column containing the labels for the subjects. Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!).Enter as a string.}
 
-\item{col.facet1}{The name of the column containing the labels for the first facet. Enter as a string.}
+\item{col.facet1}{The name of the column containing the labels for the first facet. Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.}
 
-\item{col.facet2}{The name of the column containing the labels for the second facet. Enter as a string.}
+\item{col.facet2}{The name of the column containing the labels for the second facet. Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.}
 
 \item{seq1}{A sequence of integers defining the interval at which to test the first facet. Enter a vector, or use the seq() function directly.}
 
@@ -53,7 +53,7 @@ bayesian_dstudy2(
 
 \item{chains}{Number of Markov chains. 4 by default.}
 
-\item{cores}{Number of cores to use when executing chains in parallel. 4 by default.}
+\item{cores}{Number of cores to use when executing chains in parallel. 4 by default. Note: The number of threads is set to 2 by default and cannot be changed. The number of cores times the number of threads should not exceed the number of logical CPU cores in your operating system. To check how many logical CPU cores you have, run parallel::detectCores() in the console.}
 
 \item{adapt_delta}{A value between 0 and 1. A larger value slows down the sampler but decreases the number of divergent transitions. 0.995 by default.}
 

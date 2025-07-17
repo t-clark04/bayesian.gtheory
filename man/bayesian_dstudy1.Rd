@@ -25,11 +25,11 @@ bayesian_dstudy1(
 \arguments{
 \item{data}{A data frame containing data from a random, fully crossed one-facet design. Must have one or more columns for metrics of interest, one column for labeling subjects, and one column for labeling the facet.}
 
-\item{col.scores}{The name of the column containing the metric of interest (i.e. scores, readings, etc.). Enter as a string.}
+\item{col.scores}{The name of the column containing the metric of interest (i.e. scores, readings, etc.). Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.}
 
-\item{col.subjects}{The name of the column containing the labels for the subjects. Enter as a string.}
+\item{col.subjects}{The name of the column containing the labels for the subjects. Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.}
 
-\item{col.facet}{The name of the column containing the labels for the facet. Enter as a string.}
+\item{col.facet}{The name of the column containing the labels for the facet. Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.}
 
 \item{seq}{A sequence of integers defining the interval at which to test the facet. Enter a vector, or use the seq() function directly.}
 

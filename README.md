@@ -76,20 +76,30 @@ kable(results)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.5) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.000 |  0.094 |       0.630 |       0.056 |
-|      2 |          1 |       0.000 |  0.142 |       0.739 |       0.117 |
-|      3 |          1 |       0.001 |  0.172 |       0.790 |       0.161 |
-|      4 |          1 |       0.001 |  0.192 |       0.818 |       0.191 |
-|      5 |          1 |       0.001 |  0.208 |       0.839 |       0.216 |
-|      1 |          2 |       0.000 |  0.128 |       0.715 |       0.098 |
-|      2 |          2 |       0.001 |  0.196 |       0.814 |       0.185 |
-|      3 |          2 |       0.001 |  0.241 |       0.854 |       0.236 |
-|      4 |          2 |       0.001 |  0.272 |       0.875 |       0.275 |
-|      5 |          2 |       0.001 |  0.295 |       0.891 |       0.305 |
-|      1 |          3 |       0.001 |  0.146 |       0.752 |       0.123 |
-|      2 |          3 |       0.001 |  0.227 |       0.842 |       0.219 |
-|      3 |          3 |       0.001 |  0.280 |       0.878 |       0.277 |
-|      4 |          3 |       0.001 |  0.318 |       0.899 |       0.321 |
-|      5 |          3 |       0.002 |  0.347 |       0.912 |       0.353 |
+|      1 |          1 |       0.000 |  0.088 |       0.605 |       0.052 |
+|      2 |          1 |       0.000 |  0.131 |       0.721 |       0.107 |
+|      3 |          1 |       0.000 |  0.160 |       0.775 |       0.146 |
+|      4 |          1 |       0.000 |  0.180 |       0.810 |       0.176 |
+|      5 |          1 |       0.000 |  0.195 |       0.831 |       0.196 |
+|      1 |          2 |       0.000 |  0.120 |       0.687 |       0.089 |
+|      2 |          2 |       0.000 |  0.182 |       0.796 |       0.169 |
+|      3 |          2 |       0.001 |  0.223 |       0.842 |       0.221 |
+|      4 |          2 |       0.001 |  0.254 |       0.865 |       0.258 |
+|      5 |          2 |       0.001 |  0.278 |       0.881 |       0.287 |
+|      1 |          3 |       0.000 |  0.138 |       0.728 |       0.112 |
+|      2 |          3 |       0.001 |  0.213 |       0.826 |       0.206 |
+|      3 |          3 |       0.001 |  0.261 |       0.868 |       0.266 |
+|      4 |          3 |       0.001 |  0.297 |       0.890 |       0.306 |
+|      5 |          3 |       0.001 |  0.326 |       0.903 |       0.337 |
 
 How cool is that!
+
+Note: Column names passed into the function must follow C++ naming
+conventions (i.e. only letters, numbers, or underscores; no spaces or
+hyphens!). Furthermore, the number of threads used for within-chain
+parallelization is set to 2 by default and cannot be changed. In
+general, the number of `cores` multiplied by the number of `threads`
+should not exceed the number of logical CPU cores in your operating
+system. Adjust the `cores` parameter accordingly! To check how many
+logical cores your operating system has, run parallel::detectCores() in
+the console.
