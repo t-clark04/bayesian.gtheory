@@ -9,8 +9,8 @@
 
 The purpose of the `bayesian.gtheory` package is to provide an automated
 method for executing D-studies from Generalizability Theory through a
-Bayesian framework. More specifically, the `bayesian_dstudy1` and
-`bayesian_dstudy2`functions utilize the `brms` package to carry out
+Bayesian framework. More specifically, the `dstudy_crossed1` and
+`dstudy_crossed2`functions utilize the `brms` package to carry out
 reliability analysis for a random, fully crossed study design with one
 and two facets, respectively.
 
@@ -41,7 +41,7 @@ you wanted to know the probability of the G-coefficient being above a
 certain threshold for your study? With frequentist G-theory, that’s
 impossible, but not with Bayesian!
 
-The `bayesian_dstudy2()` function calculates the G-coefficient for each
+The `dstudy_crossed2()` function calculates the G-coefficient for each
 combination of the two facets specified by the user, returning the
 result as both a point estimate (the median of the posterior
 distribution) and a credible interval (with quantiles specified by the
@@ -67,7 +67,7 @@ Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
 sample_data <- data.frame(Person, Item, Occasion, Score)
 
 # Running the bayesian_dstudy() function.
-results <- bayesian_dstudy2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 4, cores = 4)
+results <- dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 4, cores = 4)
 ```
 
 ``` r
@@ -76,21 +76,21 @@ kable(results)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.5) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.000 |  0.088 |       0.605 |       0.052 |
-|      2 |          1 |       0.000 |  0.131 |       0.721 |       0.107 |
-|      3 |          1 |       0.000 |  0.160 |       0.775 |       0.146 |
-|      4 |          1 |       0.000 |  0.180 |       0.810 |       0.176 |
-|      5 |          1 |       0.000 |  0.195 |       0.831 |       0.196 |
-|      1 |          2 |       0.000 |  0.120 |       0.687 |       0.089 |
-|      2 |          2 |       0.000 |  0.182 |       0.796 |       0.169 |
-|      3 |          2 |       0.001 |  0.223 |       0.842 |       0.221 |
-|      4 |          2 |       0.001 |  0.254 |       0.865 |       0.258 |
-|      5 |          2 |       0.001 |  0.278 |       0.881 |       0.287 |
-|      1 |          3 |       0.000 |  0.138 |       0.728 |       0.112 |
-|      2 |          3 |       0.001 |  0.213 |       0.826 |       0.206 |
-|      3 |          3 |       0.001 |  0.261 |       0.868 |       0.266 |
-|      4 |          3 |       0.001 |  0.297 |       0.890 |       0.306 |
-|      5 |          3 |       0.001 |  0.326 |       0.903 |       0.337 |
+|      1 |          1 |       0.000 |  0.090 |       0.607 |       0.054 |
+|      2 |          1 |       0.000 |  0.132 |       0.722 |       0.109 |
+|      3 |          1 |       0.000 |  0.159 |       0.775 |       0.153 |
+|      4 |          1 |       0.001 |  0.179 |       0.808 |       0.182 |
+|      5 |          1 |       0.001 |  0.194 |       0.832 |       0.202 |
+|      1 |          2 |       0.000 |  0.122 |       0.687 |       0.092 |
+|      2 |          2 |       0.001 |  0.184 |       0.792 |       0.172 |
+|      3 |          2 |       0.001 |  0.225 |       0.837 |       0.229 |
+|      4 |          2 |       0.001 |  0.255 |       0.862 |       0.266 |
+|      5 |          2 |       0.001 |  0.277 |       0.879 |       0.292 |
+|      1 |          3 |       0.000 |  0.140 |       0.728 |       0.119 |
+|      2 |          3 |       0.001 |  0.214 |       0.823 |       0.210 |
+|      3 |          3 |       0.001 |  0.263 |       0.864 |       0.273 |
+|      4 |          3 |       0.001 |  0.299 |       0.885 |       0.312 |
+|      5 |          3 |       0.001 |  0.326 |       0.901 |       0.340 |
 
 How cool is that!
 

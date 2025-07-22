@@ -1,4 +1,4 @@
-#' Execute a Two-Faceted Bayesian D-Study
+#' Execute a Two-Faceted, Fully-Crossed Bayesian D-Study
 #'
 #' @param data A data frame containing data from a random, fully crossed two-facet design. Must have one or more columns for metrics of interest, one column for labeling subjects, and two columns for labeling facets.
 #' @param col.scores The name of the column containing the metric of interest (i.e. scores, readings, etc.). Must follow C++ naming conventions (only letters, numbers, and underscores; no spaces or hyphens!). Enter as a string.
@@ -27,8 +27,8 @@
 #'Occasion <- c(rep(c(1,1,1,2,2,2), 5))
 #'Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
 #'sample_data <- data.frame(Person, Item, Occasion, Score)
-#'bayesian_dstudy2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
-bayesian_dstudy2 <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7,
+#'dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7,
                             rounded = 3, probs = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
 
