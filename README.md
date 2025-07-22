@@ -10,8 +10,8 @@
 The purpose of the `bayesian.gtheory` package is to provide an automated
 method for executing D-studies from Generalizability Theory through a
 Bayesian framework. The `dstudy_crossed1()` and \``dstudy_crossed2()`
-functions carry out reliability analysis for a random, fully crossed
-study design with one and two facets, respectively. Furthermore, the
+functions carry out reliability analysis for a fully crossed study
+design with one and two facets, respectively. Furthermore, the
 `dstudy_p_nested1()` function returns the reliability analysis for a
 fully random, partially nested (i:p) x o design, and the
 `dstudy_p_nested2()` function works for a fully random, partially nested
@@ -53,8 +53,10 @@ statement for each facet combination, specifying the probability of the
 G-coefficient being above an inputted threshold for that particular
 combination! The user even has the option of specifying prior
 distributions for any or all of the variance components through the
-`set_prior()` function in `brms`, but the author decided to keep this
-example simple by leaving the default (null) priors.
+`set_prior()` function in `brms`or setting one of the facets in the
+study as fixed through the `facet.fixed` parameter, but the author
+decided to keep this example simple by leaving the default (null) priors
+and the fully random design.
 
 ``` r
 # Loading in the package
@@ -79,21 +81,21 @@ kable(results)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.5) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.000 |  0.092 |       0.621 |       0.057 |
-|      2 |          1 |       0.000 |  0.138 |       0.740 |       0.121 |
-|      3 |          1 |       0.000 |  0.168 |       0.788 |       0.164 |
-|      4 |          1 |       0.001 |  0.189 |       0.817 |       0.194 |
-|      5 |          1 |       0.001 |  0.204 |       0.840 |       0.218 |
-|      1 |          2 |       0.000 |  0.125 |       0.700 |       0.102 |
-|      2 |          2 |       0.001 |  0.189 |       0.804 |       0.187 |
-|      3 |          2 |       0.001 |  0.233 |       0.849 |       0.242 |
-|      4 |          2 |       0.001 |  0.266 |       0.873 |       0.276 |
-|      5 |          2 |       0.001 |  0.289 |       0.889 |       0.303 |
-|      1 |          3 |       0.000 |  0.143 |       0.739 |       0.126 |
-|      2 |          3 |       0.001 |  0.220 |       0.832 |       0.223 |
-|      3 |          3 |       0.001 |  0.270 |       0.873 |       0.281 |
-|      4 |          3 |       0.001 |  0.308 |       0.896 |       0.324 |
-|      5 |          3 |       0.001 |  0.337 |       0.910 |       0.351 |
+|      1 |          1 |       0.000 |  0.092 |       0.615 |       0.057 |
+|      2 |          1 |       0.000 |  0.138 |       0.730 |       0.114 |
+|      3 |          1 |       0.001 |  0.167 |       0.781 |       0.157 |
+|      4 |          1 |       0.001 |  0.188 |       0.815 |       0.187 |
+|      5 |          1 |       0.001 |  0.203 |       0.836 |       0.208 |
+|      1 |          2 |       0.000 |  0.127 |       0.700 |       0.096 |
+|      2 |          2 |       0.001 |  0.191 |       0.799 |       0.180 |
+|      3 |          2 |       0.001 |  0.233 |       0.844 |       0.235 |
+|      4 |          2 |       0.001 |  0.264 |       0.868 |       0.272 |
+|      5 |          2 |       0.001 |  0.289 |       0.885 |       0.301 |
+|      1 |          3 |       0.001 |  0.145 |       0.740 |       0.121 |
+|      2 |          3 |       0.001 |  0.223 |       0.830 |       0.218 |
+|      3 |          3 |       0.001 |  0.274 |       0.868 |       0.280 |
+|      4 |          3 |       0.001 |  0.309 |       0.892 |       0.323 |
+|      5 |          3 |       0.001 |  0.338 |       0.905 |       0.352 |
 
 How cool is that!
 
