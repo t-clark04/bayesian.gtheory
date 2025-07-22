@@ -65,6 +65,9 @@ A data frame containing the sequence of values to be tested for facet 1 and face
 \description{
 Execute a Partially Nested Bayesian D-Study -- (i:p) x o
 }
+\note{
+Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
+}
 \examples{
 Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
 Item <- c(rep(c(1,2,3), 2), rep(c(4,5,6),2), rep(c(7,8,9),2), rep(c(10,11,12),2), rep(c(13,14,15),2))

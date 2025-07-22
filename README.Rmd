@@ -62,6 +62,8 @@ kable(results)
 
 How cool is that!
 
+Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
+
 Note: Column names passed into the function must follow C++ naming conventions 
 (i.e. only letters, numbers, or underscores; no spaces or hyphens!). Furthermore, 
 the number of threads used for within-chain parallelization is set to 2 by 

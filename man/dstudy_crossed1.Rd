@@ -59,6 +59,9 @@ A data frame containing the sequence of values to be tested for the facet, the l
 \description{
 Execute a One-Faceted Crossed Bayesian D-Study
 }
+\note{
+Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
+}
 \examples{
 Person <- c(rep(1, 3), rep(2,3), rep(3,3), rep(4,3), rep(5,3))
 Item <- c(rep(c(1,2,3), 5))

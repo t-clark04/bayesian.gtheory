@@ -21,6 +21,8 @@
 #' @returns A data frame containing the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 #' @export
 #'
+#' @note Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
+#'
 #' @examples
 #'Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
 #'Item <- c(rep(c(1,2,3), 10))
