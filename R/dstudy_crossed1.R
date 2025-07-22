@@ -58,7 +58,7 @@ dstudy_crossed1 <- function(data, col.scores, col.subjects, col.facet, seq, thre
   })
 
   # Setting the formula and running the brms model according to the user's specifications.
-  formula1 <- glue::glue("`{col.scores}` ~ (1|`{col.subjects}`) + (1|`{col.facet}`)")
+  formula1 <- glue::glue("{col.scores} ~ (1|{col.subjects}) + (1|{col.facet})")
   model <- brms::brm(formula = formula1, data = data, family = gaussian(), prior = prior, warmup = warmup,
                      iter = iter, chains = chains, cores = cores, threads = brms::threading(2), backend = "cmdstanr",
                      control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth))

@@ -3,4 +3,6 @@
 export("%>%")
 export(dstudy_crossed1)
 export(dstudy_crossed2)
+export(dstudy_p_nested1)
+export(dstudy_p_nested2)
 importFrom(magrittr,"%>%")

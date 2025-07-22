@@ -20,7 +20,7 @@ library(knitr)
 
 <!-- badges: end -->
 
-The purpose of the `bayesian.gtheory` package is to provide an automated method for executing D-studies from Generalizability Theory through a Bayesian framework. More specifically, the `dstudy_crossed1` and ``dstudy_crossed2``functions utilize the `brms` package to carry out reliability analysis for a random, fully crossed study design with one and two facets, respectively.
+The purpose of the `bayesian.gtheory` package is to provide an automated method for executing D-studies from Generalizability Theory through a Bayesian framework. The `dstudy_crossed1()` and ``dstudy_crossed2()` functions carry out reliability analysis for a random, fully crossed study design with one and two facets, respectively. Furthermore, the `dstudy_p_nested1()` function returns the reliability analysis for a fully random, partially nested (i:p) x o design, and the `dstudy_p_nested2()` function works for a fully random, partially nested p x (i:o) design.
 
 ## Installation
 
