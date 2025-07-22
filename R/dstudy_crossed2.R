@@ -8,6 +8,7 @@
 #' @param seq1 A sequence of integers defining the interval at which to test the first facet. Enter a vector, or use the seq() function directly.
 #' @param seq2 A sequence of integers defining the interval at which to test the second facet. Enter a vector, or use the seq() function directly.
 #' @param threshold A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.
+#' @param facet.fixed A variable denoting which facet (if any) should be treated as fixed in the D-study. Set to 1 if facet1 should be fixed, set to 2 if facet2 should be fixed, or leave as NULL if both facets should be treated as random. Set to NULL by default.
 #' @param rounded The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.
 #' @param probs A list containing two quantiles (between 0 and 1) at which to evaluate the reliability coefficients. Set to c(0.025, 0.975) by default.
 #' @param prior An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet1) + (1|col.facet2) + (1|col.subjects:col.facet1) + (1|col.subjects:col.facet2) + (1|col.facet1:col.facet2)". Type ?brms::set_prior in the console for more information. NULL by default.
@@ -29,8 +30,8 @@
 #'Occasion <- c(rep(c(1,1,1,2,2,2), 5))
 #'Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
 #'sample_data <- data.frame(Person, Item, Occasion, Score)
-#'dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
-dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7,
+#'dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, facet.fixed = NULL, warmup = 1000, iter = 4000, chains = 1)
+dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7, facet.fixed = NULL,
                             rounded = 3, probs = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
 
@@ -61,6 +62,13 @@ dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.face
     else if (any(is.logical(seq2)) | any(is.na(as.integer(seq2))) | any(seq2 != as.integer(seq2)) | any(as.integer(seq2) <= 0)) {
       stop("'seq2' must only contain positive integers.", call. = F)
     }
+  )
+
+  # Making sure the facet.fixed variable is set to either NULL, 1, or 2.
+  suppressWarnings(
+  if (!(is.null(facet.fixed) || facet.fixed %in% c(1,2))) {
+    stop("'facet.fixed' must evaluate to either 1, 2, or NULL.", call. = F)
+  }
   )
 
   # Making sure the number of rounding digits is a positive integer as well.
@@ -116,10 +124,26 @@ dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.face
         new_Person_Item = var_Person_Item/n_i,
         new_Person_Occasion = var_Person_Occasion/n_o,
         new_Item_Occasion = var_Item_Occasion/(n_i*n_o),
-        new_Error = var_Error/(n_i*n_o),
-        G_coef = new_Person/(new_Person + new_Item + new_Occasion + new_Person_Item +
-                               new_Person_Occasion + new_Item_Occasion + new_Error)
-      )
+        new_Error = var_Error/(n_i*n_o))
+    if (is.null(facet.fixed)) {
+      var_df <- var_df %>%
+        dplyr::mutate(
+          G_coef = new_Person/(new_Person + new_Item + new_Occasion + new_Person_Item +
+                                 new_Person_Occasion + new_Item_Occasion + new_Error))
+    }
+    else if (facet.fixed == 1) {
+      var_df <- var_df %>%
+        dplyr::mutate(
+          G_coef = (new_Person + new_Person_Item)/(new_Person + new_Person_Item + new_Occasion +
+                                                     new_Person_Occasion + new_Item_Occasion + new_Error))
+    }
+    else if (facet.fixed == 2) {
+      var_df <- var_df %>%
+        dplyr::mutate(
+          G_coef = (new_Person + new_Person_Occasion)/(new_Person + new_Person_Occasion + new_Item +
+                                                         new_Person_Item + new_Item_Occasion + new_Error))
+    }
+
     ci <- stats::quantile(var_df$G_coef, probs = probs)
     lower <- unname(ci[1])
     final_df$Lower_Bound[i] <- round(lower, rounded)

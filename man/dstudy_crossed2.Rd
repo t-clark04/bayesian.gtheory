@@ -13,6 +13,7 @@ dstudy_crossed2(
   seq1,
   seq2,
   threshold = 0.7,
+  facet.fixed = NULL,
   rounded = 3,
   probs = c(0.025, 0.975),
   prior = NULL,
@@ -40,6 +41,8 @@ dstudy_crossed2(
 \item{seq2}{A sequence of integers defining the interval at which to test the second facet. Enter a vector, or use the seq() function directly.}
 
 \item{threshold}{A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.}
+
+\item{facet.fixed}{A variable denoting which facet (if any) should be treated as fixed in the D-study. Set to 1 if facet1 should be fixed, set to 2 if facet2 should be fixed, or leave as NULL if both facets should be treated as random. Set to NULL by default.}
 
 \item{rounded}{The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.}
 
@@ -74,5 +77,5 @@ Item <- c(rep(c(1,2,3), 10))
 Occasion <- c(rep(c(1,1,1,2,2,2), 5))
 Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
 sample_data <- data.frame(Person, Item, Occasion, Score)
-dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, facet.fixed = NULL, warmup = 1000, iter = 4000, chains = 1)
 }
