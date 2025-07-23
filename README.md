@@ -77,56 +77,40 @@ results <- dstudy_crossed2(data = sample_data, col.scores = "Score", col.subject
 ```
 
 ``` r
-kable(results)
+kable(results$gstudy)
 ```
-
-<table class="kable_wrapper">
-
-<tbody>
-
-<tr>
-
-<td>
 
 |                     | Lower_Bound | Median | Upper_Bound |
 |:--------------------|------------:|-------:|------------:|
-| var_Person          |       2.145 |  7.222 |      30.882 |
-| var_Item            |       0.000 |  0.095 |       5.602 |
-| var_Occasion        |       0.001 |  0.380 |      16.767 |
-| var_Person_Item     |       0.000 |  0.046 |       0.542 |
-| var_Person_Occasion |       0.001 |  0.185 |       2.570 |
-| var_Item_Occasion   |       0.000 |  0.086 |       1.703 |
-| var_Error           |       0.226 |  0.451 |       0.970 |
+| var_Person          |       2.132 |  7.305 |      31.746 |
+| var_Item            |       0.000 |  0.098 |       5.730 |
+| var_Occasion        |       0.001 |  0.410 |      18.088 |
+| var_Person_Item     |       0.000 |  0.048 |       0.553 |
+| var_Person_Occasion |       0.001 |  0.184 |       2.807 |
+| var_Item_Occasion   |       0.000 |  0.094 |       1.770 |
+| var_Error           |       0.222 |  0.441 |       0.966 |
 
-</td>
-
-<td>
+``` r
+kable(results$dstudy)
+```
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.7) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.194 |  0.768 |       0.959 |       0.615 |
-|      2 |          1 |       0.212 |  0.823 |       0.974 |       0.700 |
-|      3 |          1 |       0.218 |  0.846 |       0.981 |       0.729 |
-|      4 |          1 |       0.222 |  0.858 |       0.984 |       0.741 |
-|      5 |          1 |       0.226 |  0.865 |       0.986 |       0.750 |
-|      1 |          2 |       0.283 |  0.849 |       0.976 |       0.758 |
-|      2 |          2 |       0.332 |  0.890 |       0.986 |       0.817 |
-|      3 |          2 |       0.350 |  0.906 |       0.989 |       0.838 |
-|      4 |          2 |       0.355 |  0.916 |       0.991 |       0.850 |
-|      5 |          2 |       0.357 |  0.921 |       0.992 |       0.856 |
-|      1 |          3 |       0.336 |  0.881 |       0.983 |       0.815 |
-|      2 |          3 |       0.400 |  0.917 |       0.990 |       0.868 |
-|      3 |          3 |       0.432 |  0.930 |       0.992 |       0.886 |
-|      4 |          3 |       0.444 |  0.937 |       0.993 |       0.896 |
-|      5 |          3 |       0.450 |  0.942 |       0.994 |       0.901 |
-
-</td>
-
-</tr>
-
-</tbody>
-
-</table>
+|      1 |          1 |       0.171 |  0.761 |       0.961 |       0.607 |
+|      2 |          1 |       0.187 |  0.818 |       0.975 |       0.689 |
+|      3 |          1 |       0.190 |  0.841 |       0.981 |       0.719 |
+|      4 |          1 |       0.191 |  0.852 |       0.984 |       0.733 |
+|      5 |          1 |       0.192 |  0.860 |       0.986 |       0.741 |
+|      1 |          2 |       0.260 |  0.843 |       0.977 |       0.749 |
+|      2 |          2 |       0.297 |  0.886 |       0.986 |       0.810 |
+|      3 |          2 |       0.308 |  0.902 |       0.989 |       0.832 |
+|      4 |          2 |       0.318 |  0.912 |       0.991 |       0.842 |
+|      5 |          2 |       0.319 |  0.917 |       0.992 |       0.848 |
+|      1 |          3 |       0.316 |  0.877 |       0.983 |       0.805 |
+|      2 |          3 |       0.366 |  0.913 |       0.990 |       0.862 |
+|      3 |          3 |       0.391 |  0.926 |       0.992 |       0.881 |
+|      4 |          3 |       0.399 |  0.934 |       0.994 |       0.891 |
+|      5 |          3 |       0.404 |  0.939 |       0.994 |       0.896 |
 
 How cool is that!
 
@@ -134,18 +118,18 @@ Thank you to Sven de Maeyer from the University of Antwerp for inspiring
 this Bayesian G-Theory package! See his blog post at
 <https://svendemaeyer.netlify.app/posts/2021-04-generalizability/>.
 
-Note: The median is used as the measure of center for both the variance
-components and the reliability coefficients because these distributions
-are rarely normal (or even symmetric). The most appropriate measure of
-center for skewed distributions like these is the one which is most
-resistant to outliers, which is the median.
+**Note \#1**: The median is used as the measure of center for both the
+variance components and the reliability coefficients because these
+distributions are rarely normal (or even symmetric). The most
+appropriate measure of center for skewed distributions like these is the
+one which is most resistant to outliers, which is the median.
 
-Note: Column names passed into the function must follow C++ naming
-conventions (i.e. only letters, numbers, or underscores; no spaces or
-hyphens!). Furthermore, the number of threads used for within-chain
-parallelization is set to 2 by default and cannot be changed. In
-general, the number of `cores` multiplied by the number of `threads`
-should not exceed the number of logical CPU cores in your operating
-system. Adjust the `cores` parameter accordingly! To check how many
-logical cores your operating system has, run parallel::detectCores() in
-the console.
+**Note \#2**: Column names passed into the function must follow C++
+naming conventions (i.e. only letters, numbers, or underscores; no
+spaces or hyphens!). Furthermore, the number of threads used for
+within-chain parallelization is set to 2 by default and cannot be
+changed. In general, the number of `cores` multiplied by the number of
+`threads` should not exceed the number of logical CPU cores in your
+operating system. Adjust the `cores` parameter accordingly! To check how
+many logical cores your operating system has, run
+parallel::detectCores() in the console.

@@ -57,16 +57,21 @@ results <- dstudy_crossed2(data = sample_data, col.scores = "Score", col.subject
 ```
 
 ```{r}
-kable(results)
+kable(results$gstudy)
 ```
+
+```{r}
+kable(results$dstudy)
+```
+
 
 How cool is that!
 
 Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
 
-Note: The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
+**Note #1**: The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
 
-Note: Column names passed into the function must follow C++ naming conventions 
+**Note #2**: Column names passed into the function must follow C++ naming conventions 
 (i.e. only letters, numbers, or underscores; no spaces or hyphens!). Furthermore, 
 the number of threads used for within-chain parallelization is set to 2 by 
 default and cannot be changed. In general, the number of `cores` multiplied by 
