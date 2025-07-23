@@ -41,9 +41,9 @@ dstudy_p_nested1(
 
 \item{threshold}{A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.}
 
-\item{rounded}{The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.}
+\item{rounded}{The number of decimal places the variance components, reliability coefficients, and probabilities should be rounded to. 3 by default.}
 
-\item{probs}{A list containing two quantiles (between 0 and 1) at which to evaluate the reliability coefficients. Set to c(0.025, 0.975) by default.}
+\item{probs}{A list containing two quantiles (between 0 and 1) at which to evaluate the variance components and reliability coefficients. Set to c(0.025, 0.975) by default.}
 
 \item{prior}{An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.facet2) + (1|col.facet2:col.subjects) + (1|col.subjects/col.facet1)". Type ?brms::set_prior in the console for more information. NULL by default.}
 
@@ -60,12 +60,14 @@ dstudy_p_nested1(
 \item{max_treedepth}{Sets the maximum tree depth in the No U-Turn Sampler (NUTS). Set to 15 by default, but can be increased if tree depth is exceeded.}
 }
 \value{
-A data frame containing the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
+Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the probs argument). The dstudy dataframe contains the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 }
 \description{
 Execute a Partially Nested Bayesian D-Study -- (i:p) x o
 }
 \note{
+The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
+
 Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
 }
 \examples{

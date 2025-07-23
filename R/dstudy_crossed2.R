@@ -9,8 +9,8 @@
 #' @param seq2 A sequence of integers defining the interval at which to test the second facet. Enter a vector, or use the seq() function directly.
 #' @param threshold A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.
 #' @param facet.fixed A variable denoting which facet (if any) should be treated as fixed in the D-study. Set to 1 if facet1 should be fixed, set to 2 if facet2 should be fixed, or leave as NULL if both facets should be treated as random. Set to NULL by default.
-#' @param rounded The number of decimal places the reliability coefficients and probabilities should be rounded to. 3 by default.
-#' @param probs A list containing two quantiles (between 0 and 1) at which to evaluate the reliability coefficients. Set to c(0.025, 0.975) by default.
+#' @param rounded The number of decimal places the variance components, reliability coefficients, and probabilities should be rounded to. 3 by default.
+#' @param probs A list containing two quantiles (between 0 and 1) at which to evaluate the variance components and reliability coefficients. Set to c(0.025, 0.975) by default.
 #' @param prior An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet1) + (1|col.facet2) + (1|col.subjects:col.facet1) + (1|col.subjects:col.facet2) + (1|col.facet1:col.facet2)". Type ?brms::set_prior in the console for more information. NULL by default.
 #' @param warmup Number of iterations to use per chain as the burn-in period for MCMC sampling. 2000 by default.
 #' @param iter Number of total iterations per chain (including warmup). 5000 by default.
@@ -19,18 +19,19 @@
 #' @param adapt_delta A value between 0 and 1. A larger value slows down the sampler but decreases the number of divergent transitions. 0.995 by default.
 #' @param max_treedepth Sets the maximum tree depth in the No U-Turn Sampler (NUTS). Set to 15 by default, but can be increased if tree depth is exceeded.
 #'
-#' @returns A data frame containing the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
+#' @returns Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the probs argument). The dstudy dataframe contains the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 #' @export
 #'
+#' @note The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
 #' @note Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
 #'
 #' @examples
 #'Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
 #'Item <- c(rep(c(1,2,3), 10))
 #'Occasion <- c(rep(c(1,1,1,2,2,2), 5))
-#'Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
+#'Score <- c(6,6,7,6,5,5,1,3,1,2,2,2,5,5,4,5,4,5,10,9,8,10,10,10,5,6,6,6,5,6)
 #'sample_data <- data.frame(Person, Item, Occasion, Score)
-#'dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, facet.fixed = NULL, warmup = 1000, iter = 4000, chains = 1)
+#'dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, facet.fixed = NULL, warmup = 1000, iter = 4000, chains = 1, probs = c(0.05, 0.95))
 dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7, facet.fixed = NULL,
                             rounded = 3, probs = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
@@ -101,6 +102,17 @@ dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.face
       tidyselect::starts_with("var")
     )
 
+  # Laying out the final variance components dataframe.
+  variance_comps <- data.frame(0,0,0)
+  colnames(variance_comps) <- c("Lower_Bound", "Median", "Upper_Bound")
+  for (i in seq(1, ncol(var_df))) {
+    vci <- stats::quantile(var_df[[i]], probs = probs)
+    variance_comps[i, 1] <- round(unname(vci[1]), rounded)
+    variance_comps[i,3] <- round(unname(vci[2]), rounded)
+    variance_comps[i,2] <- round(stats::median(var_df[[i]]), rounded)
+  }
+  rownames(variance_comps) <- colnames(var_df)
+
   # Laying out the final data frame.
   final_df <- expand.grid(seq1, seq2)
   colnames(final_df) <- c(paste0("n_", col.facet1), paste0("n_", col.facet2))
@@ -153,5 +165,5 @@ dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.face
     final_df$Placeholder[i] <- round(mean(var_df$G_coef > threshold), rounded)
   }
   names(final_df)[6] <- paste0("P(G > ", threshold, ")")
-  return(final_df)
+  return(list(gstudy = variance_comps, dstudy = final_df))
 }

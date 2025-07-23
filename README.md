@@ -51,12 +51,13 @@ distribution) and a credible interval (with quantiles specified by the
 user). Plus, the outputted data frame contains an explicit probability
 statement for each facet combination, specifying the probability of the
 G-coefficient being above an inputted threshold for that particular
-combination! The user even has the option of specifying prior
-distributions for any or all of the variance components through the
-`set_prior()` function in `brms`or setting one of the facets in the
-study as fixed through the `facet.fixed` parameter, but the author
-decided to keep this example simple by leaving the default (null) priors
-and the fully random design.
+combination! The function even returns each of the variance components,
+both as a point estimate and as a credible interval. What’s more, the
+user has the option of specifying prior distributions for any or all of
+the variance components through the `set_prior()` function in `brms`or
+setting one of the facets in the study as fixed through the
+`facet.fixed` parameter, but the author decided to keep this example
+simple by leaving the default (null) priors and the fully random design.
 
 ``` r
 # Loading in the package
@@ -66,42 +67,78 @@ library(bayesian.gtheory)
 Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
 Item <- c(rep(c(1,2,3), 10))
 Occasion <- c(rep(c(1,1,1,2,2,2), 5))
-Score <- c(2,6,7,2,5,5,4,5,6,6,7,5,5,5,4,5,4,5,5,9,8,5,7,7,4,3,5,4,5,6)
+Score <- c(6,6,7,6,5,5,1,3,1,2,2,2,5,5,4,5,4,5,10,9,8,10,10,10,5,6,6,6,5,6)
 
 # Combining all of the data into one data frame.
 sample_data <- data.frame(Person, Item, Occasion, Score)
 
 # Running the bayesian_dstudy() function.
-results <- dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), facet.fixed = NULL, threshold = 0.5, warmup = 1000, iter = 4000, chains = 4, cores = 4)
+results <- dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), facet.fixed = NULL, threshold = 0.7, warmup = 1000, iter = 4000, chains = 4, cores = 4)
 ```
 
 ``` r
 kable(results)
 ```
 
-| n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.5) |
+<table class="kable_wrapper">
+
+<tbody>
+
+<tr>
+
+<td>
+
+|                     | Lower_Bound | Median | Upper_Bound |
+|:--------------------|------------:|-------:|------------:|
+| var_Person          |       2.145 |  7.222 |      30.882 |
+| var_Item            |       0.000 |  0.095 |       5.602 |
+| var_Occasion        |       0.001 |  0.380 |      16.767 |
+| var_Person_Item     |       0.000 |  0.046 |       0.542 |
+| var_Person_Occasion |       0.001 |  0.185 |       2.570 |
+| var_Item_Occasion   |       0.000 |  0.086 |       1.703 |
+| var_Error           |       0.226 |  0.451 |       0.970 |
+
+</td>
+
+<td>
+
+| n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.7) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.000 |  0.092 |       0.615 |       0.057 |
-|      2 |          1 |       0.000 |  0.138 |       0.730 |       0.114 |
-|      3 |          1 |       0.001 |  0.167 |       0.781 |       0.157 |
-|      4 |          1 |       0.001 |  0.188 |       0.815 |       0.187 |
-|      5 |          1 |       0.001 |  0.203 |       0.836 |       0.208 |
-|      1 |          2 |       0.000 |  0.127 |       0.700 |       0.096 |
-|      2 |          2 |       0.001 |  0.191 |       0.799 |       0.180 |
-|      3 |          2 |       0.001 |  0.233 |       0.844 |       0.235 |
-|      4 |          2 |       0.001 |  0.264 |       0.868 |       0.272 |
-|      5 |          2 |       0.001 |  0.289 |       0.885 |       0.301 |
-|      1 |          3 |       0.001 |  0.145 |       0.740 |       0.121 |
-|      2 |          3 |       0.001 |  0.223 |       0.830 |       0.218 |
-|      3 |          3 |       0.001 |  0.274 |       0.868 |       0.280 |
-|      4 |          3 |       0.001 |  0.309 |       0.892 |       0.323 |
-|      5 |          3 |       0.001 |  0.338 |       0.905 |       0.352 |
+|      1 |          1 |       0.194 |  0.768 |       0.959 |       0.615 |
+|      2 |          1 |       0.212 |  0.823 |       0.974 |       0.700 |
+|      3 |          1 |       0.218 |  0.846 |       0.981 |       0.729 |
+|      4 |          1 |       0.222 |  0.858 |       0.984 |       0.741 |
+|      5 |          1 |       0.226 |  0.865 |       0.986 |       0.750 |
+|      1 |          2 |       0.283 |  0.849 |       0.976 |       0.758 |
+|      2 |          2 |       0.332 |  0.890 |       0.986 |       0.817 |
+|      3 |          2 |       0.350 |  0.906 |       0.989 |       0.838 |
+|      4 |          2 |       0.355 |  0.916 |       0.991 |       0.850 |
+|      5 |          2 |       0.357 |  0.921 |       0.992 |       0.856 |
+|      1 |          3 |       0.336 |  0.881 |       0.983 |       0.815 |
+|      2 |          3 |       0.400 |  0.917 |       0.990 |       0.868 |
+|      3 |          3 |       0.432 |  0.930 |       0.992 |       0.886 |
+|      4 |          3 |       0.444 |  0.937 |       0.993 |       0.896 |
+|      5 |          3 |       0.450 |  0.942 |       0.994 |       0.901 |
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
 
 How cool is that!
 
 Thank you to Sven de Maeyer from the University of Antwerp for inspiring
 this Bayesian G-Theory package! See his blog post at
 <https://svendemaeyer.netlify.app/posts/2021-04-generalizability/>.
+
+Note: The median is used as the measure of center for both the variance
+components and the reliability coefficients because these distributions
+are rarely normal (or even symmetric). The most appropriate measure of
+center for skewed distributions like these is the one which is most
+resistant to outliers, which is the median.
 
 Note: Column names passed into the function must follow C++ naming
 conventions (i.e. only letters, numbers, or underscores; no spaces or
