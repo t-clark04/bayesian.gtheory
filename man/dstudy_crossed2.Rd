@@ -15,7 +15,7 @@ dstudy_crossed2(
   threshold = 0.7,
   facet.fixed = NULL,
   rounded = 3,
-  probs = c(0.025, 0.975),
+  quantiles = c(0.025, 0.975),
   prior = NULL,
   warmup = 2000,
   iter = 5000,
@@ -46,7 +46,7 @@ dstudy_crossed2(
 
 \item{rounded}{The number of decimal places the variance components, reliability coefficients, and probabilities should be rounded to. 3 by default.}
 
-\item{probs}{A list containing two quantiles (between 0 and 1) at which to evaluate the variance components and reliability coefficients. Set to c(0.025, 0.975) by default.}
+\item{quantiles}{A list containing two quantiles (between 0 and 1) at which to evaluate the variance components and reliability coefficients. Set to c(0.025, 0.975) by default.}
 
 \item{prior}{An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet1) + (1|col.facet2) + (1|col.subjects:col.facet1) + (1|col.subjects:col.facet2) + (1|col.facet1:col.facet2)". Type ?brms::set_prior in the console for more information. NULL by default.}
 
@@ -63,7 +63,7 @@ dstudy_crossed2(
 \item{max_treedepth}{Sets the maximum tree depth in the No U-Turn Sampler (NUTS). Set to 15 by default, but can be increased if tree depth is exceeded.}
 }
 \value{
-Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the probs argument). The dstudy dataframe contains the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
+Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the quantiles argument). The dstudy dataframe contains the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 }
 \description{
 Execute a Two-Faceted, Fully-Crossed Bayesian D-Study
@@ -79,5 +79,5 @@ Item <- c(rep(c(1,2,3), 10))
 Occasion <- c(rep(c(1,1,1,2,2,2), 5))
 Score <- c(6,6,7,6,5,5,1,3,1,2,2,2,5,5,4,5,4,5,10,9,8,10,10,10,5,6,6,6,5,6)
 sample_data <- data.frame(Person, Item, Occasion, Score)
-dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, facet.fixed = NULL, warmup = 1000, iter = 4000, chains = 1, probs = c(0.05, 0.95))
+dstudy_crossed2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.7, facet.fixed = NULL, warmup = 1000, iter = 4000, chains = 1)
 }

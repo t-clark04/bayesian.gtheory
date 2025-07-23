@@ -7,7 +7,7 @@
 #' @param seq A sequence of integers defining the interval at which to test the facet. Enter a vector, or use the seq() function directly.
 #' @param threshold A decimal between 0 and 1. Will be used to calculate the probability of the reliability coefficient being above the inputted threshold. 0.7 by default.
 #' @param rounded The number of decimal places the variance components, reliability coefficients, and probabilities should be rounded to. 3 by default.
-#' @param probs A list containing two quantiles (between 0 and 1) at which to evaluate the variance components and the reliability coefficients. Set to c(0.025, 0.975) by default.
+#' @param quantiles A list containing two quantiles (between 0 and 1) at which to evaluate the variance components and the reliability coefficients. Set to c(0.025, 0.975) by default.
 #' @param prior An optional set of prior distributions for the variance components, specified by the user through the set_prior() function in brms. To ensure correctly formatted priors, the user should first use the get_prior() function with the formula "col.scores ~ (1|col.subjects) + (1|col.facet)". Type ?brms::set_prior in the console for more information. NULL by default.
 #' @param warmup Number of iterations to use per chain as the burn-in period for MCMC sampling. 2000 by default.
 #' @param iter Number of total iterations per chain (including warmup). 5000 by default.
@@ -16,7 +16,7 @@
 #' @param adapt_delta A value between 0 and 1. A larger value slows down the sampler but decreases the number of divergent transitions. 0.995 by default.
 #' @param max_treedepth Sets the maximum tree depth in the No U-Turn Sampler (NUTS). Set to 15 by default, but can be increased if tree depth is exceeded.
 #'
-#' @returns Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the probs argument). The dstudy dataframe contains the sequence of values to be tested for the facet, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
+#' @returns Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the quantiles argument). The dstudy dataframe contains the sequence of values to be tested for the facet, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 #' @export
 #'
 #' @note The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
@@ -29,7 +29,7 @@
 #'sample_data <- data.frame(Person, Item, Score)
 #'dstudy_crossed1(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet = "Item", seq = seq(1,5,1), threshold = 0.7, warmup = 1000, iter = 4000, chains = 4)
 dstudy_crossed1 <- function(data, col.scores, col.subjects, col.facet, seq, threshold = 0.7,
-                            rounded = 3, probs = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
+                            rounded = 3, quantiles = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
 
   # Making sure the user entered real column names.
@@ -85,7 +85,7 @@ dstudy_crossed1 <- function(data, col.scores, col.subjects, col.facet, seq, thre
   variance_comps <- data.frame(0,0,0)
   colnames(variance_comps) <- c("Lower_Bound", "Median", "Upper_Bound")
   for (i in seq(1, ncol(var_df))) {
-    vci <- stats::quantile(var_df[[i]], probs = probs)
+    vci <- stats::quantile(var_df[[i]], probs = quantiles)
     variance_comps[i, 1] <- round(unname(vci[1]), rounded)
     variance_comps[i,3] <- round(unname(vci[2]), rounded)
     variance_comps[i,2] <- round(stats::median(var_df[[i]]), rounded)
@@ -114,7 +114,7 @@ dstudy_crossed1 <- function(data, col.scores, col.subjects, col.facet, seq, thre
         new_Error = var_Error/(n_i),
         G_coef = new_Person/(new_Person + new_Item + new_Error)
       )
-    ci <- stats::quantile(var_df$G_coef, probs = probs)
+    ci <- stats::quantile(var_df$G_coef, probs = quantiles)
     lower <- unname(ci[1])
     final_df$Lower_Bound[i] <- round(lower, rounded)
     final_df$Median[i] <- round(stats::median(var_df$G_coef), rounded)
