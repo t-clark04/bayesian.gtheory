@@ -8,14 +8,12 @@
 <!-- badges: end -->
 
 The purpose of the `bayesian.gtheory` package is to provide an automated
-method for executing D-studies from Generalizability Theory through a
-Bayesian framework. The `dstudy_crossed1()` and \``dstudy_crossed2()`
-functions carry out reliability analysis for a fully crossed study
-design with one and two facets, respectively. Furthermore, the
-`dstudy_p_nested1()` function returns the reliability analysis for a
-fully random, partially nested (i:p) x o design, and the
-`dstudy_p_nested2()` function works for a fully random, partially nested
-p x (i:o) design.
+method for executing D-studies from univariate Generalizability Theory
+through a Bayesian framework. The package offers individual functions
+for every possible one-facet and two-facet study design, returning both
+the G-study (i.e. variance components) and the D-study for the inputted
+data. See the “Function Dictionary” section to determine which function
+to use for your study design!
 
 ## Installation
 
@@ -26,6 +24,34 @@ You can install the development version of bayesian.gtheory from
 # install.packages("devtools")
 devtools::install_github("t-clark04/bayesian.gtheory")
 ```
+
+**Note**: The `cmdstanr` package must also be installed prior to using
+any functions in the `bayesian.gtheory` package. To install `cmdstanr`…
+
+``` r
+# First, run this line of code.
+install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+# Then, run this line.
+cmdstanr::install_cmdstan(). 
+# Finally, verify successful installation with this line. 
+cmdstanr::cmdstan_version().
+```
+
+## Function Dictionary
+
+In the study design column, *p* represents the objects of measurement,
+and *i* and *o* are arbitrary facets.
+
+| Function Name      | Study Design      |
+|--------------------|-------------------|
+| dstudy_crossed1()  | *p* x *i*         |
+| dstudy_crossed2()  | *p* x *i* x *o*   |
+| dstudy_nested1()   | *i* : *p*         |
+| dstudy_nested2()   | *i* : *o* : *p*   |
+| dstudy_p_nested1() | (*i* : *p*) x *o* |
+| dstudy_p_nested2() | *p* x (*i* : *o*) |
+| dstudy_p_nested3() | *i* : (*p* x *o*) |
+| dstudy_p_nested4() | (*i* x *o*) : *p* |
 
 ## Usage
 
@@ -82,13 +108,13 @@ kable(results$gstudy)
 
 |                     | Lower_Bound | Median | Upper_Bound |
 |:--------------------|------------:|-------:|------------:|
-| var_Person          |       2.174 |  7.420 |      31.449 |
-| var_Item            |       0.000 |  0.100 |       5.417 |
-| var_Occasion        |       0.001 |  0.368 |      17.333 |
-| var_Person_Item     |       0.000 |  0.049 |       0.568 |
-| var_Person_Occasion |       0.001 |  0.185 |       2.779 |
-| var_Item_Occasion   |       0.000 |  0.090 |       1.662 |
-| var_Error           |       0.220 |  0.444 |       0.955 |
+| var_Person          |       2.128 |  7.350 |      33.094 |
+| var_Item            |       0.000 |  0.097 |       5.818 |
+| var_Occasion        |       0.001 |  0.371 |      17.594 |
+| var_Person_Item     |       0.000 |  0.048 |       0.533 |
+| var_Person_Occasion |       0.001 |  0.180 |       2.674 |
+| var_Item_Occasion   |       0.000 |  0.089 |       1.687 |
+| var_Error           |       0.225 |  0.441 |       0.957 |
 
 ``` r
 kable(results$dstudy)
@@ -96,21 +122,21 @@ kable(results$dstudy)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.7) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.173 |  0.767 |       0.961 |       0.611 |
-|      2 |          1 |       0.190 |  0.823 |       0.975 |       0.694 |
-|      3 |          1 |       0.197 |  0.846 |       0.981 |       0.725 |
-|      4 |          1 |       0.200 |  0.858 |       0.984 |       0.739 |
-|      5 |          1 |       0.203 |  0.865 |       0.986 |       0.746 |
-|      1 |          2 |       0.267 |  0.846 |       0.977 |       0.753 |
-|      2 |          2 |       0.303 |  0.889 |       0.986 |       0.815 |
-|      3 |          2 |       0.317 |  0.906 |       0.989 |       0.835 |
-|      4 |          2 |       0.323 |  0.915 |       0.991 |       0.846 |
-|      5 |          2 |       0.327 |  0.920 |       0.992 |       0.851 |
-|      1 |          3 |       0.315 |  0.878 |       0.983 |       0.812 |
-|      2 |          3 |       0.373 |  0.915 |       0.990 |       0.866 |
-|      3 |          3 |       0.397 |  0.928 |       0.992 |       0.886 |
-|      4 |          3 |       0.409 |  0.936 |       0.993 |       0.893 |
-|      5 |          3 |       0.416 |  0.941 |       0.994 |       0.898 |
+|      1 |          1 |       0.173 |  0.766 |       0.960 |       0.614 |
+|      2 |          1 |       0.196 |  0.822 |       0.975 |       0.695 |
+|      3 |          1 |       0.202 |  0.845 |       0.981 |       0.723 |
+|      4 |          1 |       0.207 |  0.858 |       0.984 |       0.736 |
+|      5 |          1 |       0.209 |  0.867 |       0.986 |       0.745 |
+|      1 |          2 |       0.260 |  0.847 |       0.977 |       0.755 |
+|      2 |          2 |       0.302 |  0.889 |       0.986 |       0.816 |
+|      3 |          2 |       0.325 |  0.905 |       0.989 |       0.837 |
+|      4 |          2 |       0.331 |  0.915 |       0.991 |       0.846 |
+|      5 |          2 |       0.335 |  0.920 |       0.992 |       0.851 |
+|      1 |          3 |       0.314 |  0.880 |       0.983 |       0.814 |
+|      2 |          3 |       0.374 |  0.915 |       0.990 |       0.864 |
+|      3 |          3 |       0.399 |  0.929 |       0.992 |       0.882 |
+|      4 |          3 |       0.417 |  0.936 |       0.993 |       0.890 |
+|      5 |          3 |       0.426 |  0.941 |       0.994 |       0.896 |
 
 How cool is that!
 
@@ -128,9 +154,10 @@ resistant to outliers, which is the median.
 
 Column names passed into the function must follow C++ naming conventions
 (i.e. only letters, numbers, or underscores; no spaces or hyphens!).
-Furthermore, the number of threads used for within-chain parallelization
-is set to 2 by default and cannot be changed. In general, the number of
-`cores` multiplied by the number of `threads` should not exceed the
-number of logical CPU cores in your operating system. Adjust the `cores`
-parameter accordingly! To check how many logical cores your operating
-system has, run parallel::detectCores() in the console.
+
+The number of threads used for within-chain parallelization is set to 2
+by default and cannot be changed. In general, the number of `cores`
+multiplied by the number of `threads` should not exceed the number of
+logical CPU cores in your operating system. Adjust the `cores` parameter
+accordingly! To check how many logical cores your operating system has,
+run `parallel::detectCores()` in the console.
