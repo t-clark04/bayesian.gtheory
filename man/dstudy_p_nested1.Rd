@@ -74,6 +74,7 @@ The median is used as the measure of center for both the variance components and
 Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
 }
 \examples{
+suppressMessages(suppressWarnings({
 Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
 Item <- c(rep(c(1,2,3), 2), rep(c(4,5,6),2), rep(c(7,8,9),2),
          rep(c(10,11,12),2), rep(c(13,14,15),2))
@@ -86,4 +87,5 @@ dstudy_p_nested1(data = sample_data, col.scores = "Score",
                 col.facet2 = "Occasion", seq1 = seq(1,5,1),
                 seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000,
                 iter = 4000, chains = 1)
+}))
 }
