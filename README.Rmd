@@ -20,7 +20,7 @@ library(knitr)
 
 <!-- badges: end -->
 
-The purpose of the `bayesian.gtheory` package is to provide an automated method for executing D-studies from univariate Generalizability Theory through a Bayesian framework. The package offers individual functions for every possible one-facet and two-facet study design, returning both the G-study (i.e. variance components) and the D-study for the inputted data. See the "Function Dictionary" section to determine which function to use for your study design!
+The purpose of the `bayesian.gtheory` package is to provide an automated method for executing D-studies from univariate Generalizability Theory through a Bayesian framework. The package offers individual functions for every possible random one-facet and two-facet study design, returning both the G-study (i.e. variance components) and the D-study for the inputted data. See the "Function Dictionary" section to determine which function to use for your study design!
 
 ## Installation
 
@@ -44,8 +44,6 @@ cmdstanr::cmdstan_version().
 
 ## Function Dictionary
 
-In the study design column, *p* represents the objects of measurement, and *i* and *o* are arbitrary facets.
-
 | Function Name      | Study Design      |
 |--------------------|-------------------|
 | dstudy_crossed1()  | *p* x *i*         |
@@ -57,13 +55,15 @@ In the study design column, *p* represents the objects of measurement, and *i* a
 | dstudy_p_nested3() | *i* : (*p* x *o*) |
 | dstudy_p_nested4() | (*i* x *o*) : *p* |
 
+: In the study design column, *p* represents the objects of measurement, and *i* and *o* are arbitrary facets.
+
 ## Usage
 
 Let's say you did a study in which you gave five different students a test with 3 different items on it, and you gave them that test on two separate occasions. You want to know the reliability with which you could generalize to each student's true score by averaging over x number of items and y number of occasions. This is called a reliability analysis.
 
 In regular (i.e. frequentist) Generalizability Theory, the result of such a reliability analysis is given as a point estimate -- the G-coefficient for absolute agreement (or $\Phi$). However, what if you wanted the reliability to be given as an interval instead? And what if you wanted to know the probability of the G-coefficient being above a certain threshold for your study? With frequentist G-theory, that's impossible, but not with Bayesian!
 
-The `dstudy_crossed2()` function calculates the G-coefficient for each combination of the two facets specified by the user, returning the result as both a point estimate (the median of the posterior distribution) and a credible interval (with quantiles specified by the user). Plus, the outputted data frame contains an explicit probability statement for each facet combination, specifying the probability of the G-coefficient being above an inputted threshold for that particular combination! The function even returns each of the variance components, both as a point estimate and as a credible interval. What's more, the user has the option of specifying prior distributions for any or all of the variance components through the `set_prior()` function in `brms`or setting one of the facets in the study as fixed through the `facet.fixed` parameter, but the author decided to keep this example simple by leaving the default (null) priors and the fully random design.
+The `dstudy_crossed2()` function calculates the G-coefficient for each combination of the two facets specified by the user, returning the result as both a point estimate (the median of the posterior distribution) and a credible interval (with quantiles specified by the user). Plus, the outputted data frame contains an explicit probability statement for each facet combination, specifying the probability of the G-coefficient being above an inputted threshold for that particular combination! The function even returns each of the variance components (known collectively as the G-study), both as point estimates and as credible intervals.
 
 ```{r, echo = TRUE, results = "hide", message = FALSE, warning = FALSE}
 # Loading in the package
@@ -90,7 +90,7 @@ kable(results$gstudy)
 kable(results$dstudy)
 ```
 
-How cool is that!
+How cool is that! The user also could have specified prior distributions for any or all of the variance components through the `set_prior()` function in `brms`or set one of the facets in the study as fixed through the `facet.fixed` parameter. However, the author decided to keep this example simple by leaving the default (null) priors and the fully random design.
 
 ## Notes
 
@@ -98,6 +98,6 @@ Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Ba
 
 The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
 
-Column names passed into the function must follow C++ naming conventions (i.e. only letters, numbers, or underscores; no spaces or hyphens!). 
+Column names passed into the function must follow C++ naming conventions (i.e. only letters, numbers, or underscores; no spaces or hyphens!).
 
 The number of threads used for within-chain parallelization is set to 2 by default and cannot be changed. In general, the number of `cores` multiplied by the number of `threads` should not exceed the number of logical CPU cores in your operating system. Adjust the `cores` parameter accordingly! To check how many logical cores your operating system has, run `parallel::detectCores()` in the console.

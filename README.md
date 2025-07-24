@@ -10,10 +10,10 @@
 The purpose of the `bayesian.gtheory` package is to provide an automated
 method for executing D-studies from univariate Generalizability Theory
 through a Bayesian framework. The package offers individual functions
-for every possible one-facet and two-facet study design, returning both
-the G-study (i.e. variance components) and the D-study for the inputted
-data. See the “Function Dictionary” section to determine which function
-to use for your study design!
+for every possible random one-facet and two-facet study design,
+returning both the G-study (i.e. variance components) and the D-study
+for the inputted data. See the “Function Dictionary” section to
+determine which function to use for your study design!
 
 ## Installation
 
@@ -39,9 +39,6 @@ cmdstanr::cmdstan_version().
 
 ## Function Dictionary
 
-In the study design column, *p* represents the objects of measurement,
-and *i* and *o* are arbitrary facets.
-
 | Function Name      | Study Design      |
 |--------------------|-------------------|
 | dstudy_crossed1()  | *p* x *i*         |
@@ -52,6 +49,9 @@ and *i* and *o* are arbitrary facets.
 | dstudy_p_nested2() | *p* x (*i* : *o*) |
 | dstudy_p_nested3() | *i* : (*p* x *o*) |
 | dstudy_p_nested4() | (*i* x *o*) : *p* |
+
+In the study design column, *p* represents the objects of measurement,
+and *i* and *o* are arbitrary facets.
 
 ## Usage
 
@@ -77,13 +77,9 @@ distribution) and a credible interval (with quantiles specified by the
 user). Plus, the outputted data frame contains an explicit probability
 statement for each facet combination, specifying the probability of the
 G-coefficient being above an inputted threshold for that particular
-combination! The function even returns each of the variance components,
-both as a point estimate and as a credible interval. What’s more, the
-user has the option of specifying prior distributions for any or all of
-the variance components through the `set_prior()` function in `brms`or
-setting one of the facets in the study as fixed through the
-`facet.fixed` parameter, but the author decided to keep this example
-simple by leaving the default (null) priors and the fully random design.
+combination! The function even returns each of the variance components
+(known collectively as the G-study), both as point estimates and as
+credible intervals.
 
 ``` r
 # Loading in the package
@@ -108,13 +104,13 @@ kable(results$gstudy)
 
 |                     | Lower_Bound | Median | Upper_Bound |
 |:--------------------|------------:|-------:|------------:|
-| var_Person          |       2.128 |  7.350 |      33.094 |
-| var_Item            |       0.000 |  0.097 |       5.818 |
-| var_Occasion        |       0.001 |  0.371 |      17.594 |
-| var_Person_Item     |       0.000 |  0.048 |       0.533 |
-| var_Person_Occasion |       0.001 |  0.180 |       2.674 |
-| var_Item_Occasion   |       0.000 |  0.089 |       1.687 |
-| var_Error           |       0.225 |  0.441 |       0.957 |
+| var_Person          |       2.179 |  7.406 |      30.559 |
+| var_Item            |       0.000 |  0.103 |       6.138 |
+| var_Occasion        |       0.001 |  0.438 |      17.159 |
+| var_Person_Item     |       0.000 |  0.050 |       0.576 |
+| var_Person_Occasion |       0.001 |  0.190 |       2.650 |
+| var_Item_Occasion   |       0.000 |  0.091 |       1.745 |
+| var_Error           |       0.222 |  0.441 |       0.932 |
 
 ``` r
 kable(results$dstudy)
@@ -122,23 +118,28 @@ kable(results$dstudy)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.7) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.173 |  0.766 |       0.960 |       0.614 |
-|      2 |          1 |       0.196 |  0.822 |       0.975 |       0.695 |
-|      3 |          1 |       0.202 |  0.845 |       0.981 |       0.723 |
-|      4 |          1 |       0.207 |  0.858 |       0.984 |       0.736 |
-|      5 |          1 |       0.209 |  0.867 |       0.986 |       0.745 |
-|      1 |          2 |       0.260 |  0.847 |       0.977 |       0.755 |
-|      2 |          2 |       0.302 |  0.889 |       0.986 |       0.816 |
-|      3 |          2 |       0.325 |  0.905 |       0.989 |       0.837 |
-|      4 |          2 |       0.331 |  0.915 |       0.991 |       0.846 |
-|      5 |          2 |       0.335 |  0.920 |       0.992 |       0.851 |
-|      1 |          3 |       0.314 |  0.880 |       0.983 |       0.814 |
-|      2 |          3 |       0.374 |  0.915 |       0.990 |       0.864 |
-|      3 |          3 |       0.399 |  0.929 |       0.992 |       0.882 |
-|      4 |          3 |       0.417 |  0.936 |       0.993 |       0.890 |
-|      5 |          3 |       0.426 |  0.941 |       0.994 |       0.896 |
+|      1 |          1 |       0.181 |  0.760 |       0.958 |       0.601 |
+|      2 |          1 |       0.201 |  0.815 |       0.974 |       0.685 |
+|      3 |          1 |       0.210 |  0.837 |       0.979 |       0.715 |
+|      4 |          1 |       0.214 |  0.849 |       0.983 |       0.729 |
+|      5 |          1 |       0.216 |  0.857 |       0.985 |       0.738 |
+|      1 |          2 |       0.271 |  0.842 |       0.976 |       0.748 |
+|      2 |          2 |       0.313 |  0.884 |       0.985 |       0.812 |
+|      3 |          2 |       0.331 |  0.900 |       0.988 |       0.832 |
+|      4 |          2 |       0.339 |  0.909 |       0.990 |       0.842 |
+|      5 |          2 |       0.346 |  0.915 |       0.992 |       0.849 |
+|      1 |          3 |       0.331 |  0.875 |       0.982 |       0.809 |
+|      2 |          3 |       0.384 |  0.911 |       0.989 |       0.863 |
+|      3 |          3 |       0.409 |  0.924 |       0.991 |       0.881 |
+|      4 |          3 |       0.423 |  0.932 |       0.993 |       0.890 |
+|      5 |          3 |       0.430 |  0.937 |       0.994 |       0.896 |
 
-How cool is that!
+How cool is that! The user also could have specified prior distributions
+for any or all of the variance components through the `set_prior()`
+function in `brms`or set one of the facets in the study as fixed through
+the `facet.fixed` parameter. However, the author decided to keep this
+example simple by leaving the default (null) priors and the fully random
+design.
 
 ## Notes
 
