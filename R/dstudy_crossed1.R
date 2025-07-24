@@ -19,18 +19,30 @@
 #' @returns Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the quantiles argument). The dstudy dataframe contains the sequence of values to be tested for the facet, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 #' @export
 #'
+#' @details This function uses the "cmdstanr" backend for communication with STAN, so installation of the 'cmdstanr' package is required. To install 'cmdstanr', first run install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos"))), and then run cmdstanr::install_cmdstan(). To verify installation, run cmdstanr::cmdstan_version().
+#'
 #' @note The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
 #' @note Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
 #'
 #' @examples
+#'suppressMessages(suppressWarnings({
 #'Person <- c(rep(1, 3), rep(2,3), rep(3,3), rep(4,3), rep(5,3))
 #'Item <- c(rep(c(1,2,3), 5))
 #'Score <- c(6,6,7,4,5,4,5,5,4,10,9,9,4,3,5)
 #'sample_data <- data.frame(Person, Item, Score)
-#'dstudy_crossed1(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet = "Item", seq = seq(1,5,1), threshold = 0.7, warmup = 1000, iter = 4000, chains = 4)
+#'dstudy_crossed1(data = sample_data, col.scores = "Score",
+#'                col.subjects = "Person", col.facet = "Item",
+#'                seq = seq(1,5,1), threshold = 0.7, warmup = 1000,
+#'                iter = 4000, chains = 1)
+#'}))
 dstudy_crossed1 <- function(data, col.scores, col.subjects, col.facet, seq, threshold = 0.7,
                             rounded = 3, quantiles = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                             cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
+
+  # Making sure the user has 'cmdstanr' installed.
+  if (!requireNamespace("cmdstanr", quietly = TRUE)) {
+    stop("The 'cmdstanr' package is required to run this function. Please check the help file for installation instructions.")
+  }
 
   # Making sure the user entered real column names.
   if (!(col.scores) %in% colnames(data)) {
@@ -62,7 +74,7 @@ dstudy_crossed1 <- function(data, col.scores, col.subjects, col.facet, seq, thre
 
   # Setting the formula and running the brms model according to the user's specifications.
   formula1 <- glue::glue("{col.scores} ~ (1|{col.subjects}) + (1|{col.facet})")
-  model <- brms::brm(formula = formula1, data = data, family = gaussian(), prior = prior, warmup = warmup,
+  model <- brms::brm(formula = formula1, data = data, family = stats::gaussian(), prior = prior, warmup = warmup,
                      iter = iter, chains = chains, cores = cores, threads = brms::threading(2), backend = "cmdstanr",
                      control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth))
 

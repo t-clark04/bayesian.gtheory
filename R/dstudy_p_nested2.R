@@ -21,19 +21,31 @@
 #' @returns Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the quantiles argument). The dstudy dataframe contains the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 #' @export
 #'
+#' @details This function uses the "cmdstanr" backend for communication with STAN, so installation of the 'cmdstanr' package is required. To install 'cmdstanr', first run install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos"))), and then run cmdstanr::install_cmdstan(). To verify installation, run cmdstanr::cmdstan_version().
+
 #' @note The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
 #' @note Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at https://svendemaeyer.netlify.app/posts/2021-04-generalizability/.
 #'
 #' @examples
+#'suppressMessages(suppressWarnings({
 #'Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
 #'Item <- c(rep(c(1,2,3,4,5,6),5))
 #'Occasion <- c(rep(c(1,1,1,2,2,2), 5))
-#'Score <- c(19,17,20,18,18,20,15,15,17,16,17,17,20,20,19,20,20,20,11,14,12,12,13,12,18,19,18,19,18,19)
+#'Score <- c(19,17,20,18,18,20,15,15,17,16,17,17,20,20,19,20,20,
+#'           20,11,14,12,12,13,12,18,19,18,19,18,19)
 #'sample_data <- data.frame(Person, Item, Occasion, Score)
-#'dstudy_p_nested2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+#'dstudy_p_nested2(data = sample_data, col.scores = "Score", col.subjects = "Person",
+#'                 col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1),
+#'                 seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+#'}))
 dstudy_p_nested2 <- function(data, col.scores, col.subjects, col.facet1, col.facet2, seq1, seq2, threshold = 0.7,
                              rounded = 3, quantiles = c(0.025, 0.975), prior = NULL, warmup = 2000, iter = 5000, chains = 4,
                              cores = 4, adapt_delta = 0.995, max_treedepth = 15) {
+
+  # Making sure the user has 'cmdstanr' installed.
+  if (!requireNamespace("cmdstanr", quietly = TRUE)) {
+    stop("The 'cmdstanr' package is required to run this function. Please check the help file for installation instructions.")
+  }
 
   # Making sure the user entered real column names.
   if (!(col.scores) %in% colnames(data)) {
@@ -71,7 +83,7 @@ dstudy_p_nested2 <- function(data, col.scores, col.subjects, col.facet1, col.fac
 
   # Setting the formula and running the brms model according to the user's specifications.
   formula1 <- glue::glue("{col.scores} ~ (1|{col.subjects}) + (1|{col.subjects}:{col.facet2}) + (1|{col.facet2}/{col.facet1})")
-  model <- brms::brm(formula = formula1, data = data, family = gaussian(), prior = prior, warmup = warmup,
+  model <- brms::brm(formula = formula1, data = data, family = stats::gaussian(), prior = prior, warmup = warmup,
                      iter = iter, chains = chains, cores = cores, threads = brms::threading(2),
                      backend = "cmdstanr", control = list(adapt_delta = adapt_delta, max_treedepth = max_treedepth))
 

@@ -65,6 +65,9 @@ Two dataframes. The gstudy dataframe contains the lower bound, median, and upper
 \description{
 Execute a Partially Nested Bayesian D-Study -- p x (i:o)
 }
+\details{
+This function uses the "cmdstanr" backend for communication with STAN, so installation of the 'cmdstanr' package is required. To install 'cmdstanr', first run install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos"))), and then run cmdstanr::install_cmdstan(). To verify installation, run cmdstanr::cmdstan_version().
+}
 \note{
 The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
 
@@ -74,7 +77,10 @@ Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Ba
 Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
 Item <- c(rep(c(1,2,3,4,5,6),5))
 Occasion <- c(rep(c(1,1,1,2,2,2), 5))
-Score <- c(19,17,20,18,18,20,15,15,17,16,17,17,20,20,19,20,20,20,11,14,12,12,13,12,18,19,18,19,18,19)
+Score <- c(19,17,20,18,18,20,15,15,17,16,17,17,20,20,19,20,20,
+          20,11,14,12,12,13,12,18,19,18,19,18,19)
 sample_data <- data.frame(Person, Item, Occasion, Score)
-dstudy_p_nested2(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1), seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
+dstudy_p_nested2(data = sample_data, col.scores = "Score", col.subjects = "Person",
+                col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,5,1),
+                seq2 = seq(1,3,1), threshold = 0.5, warmup = 1000, iter = 4000, chains = 1)
 }
