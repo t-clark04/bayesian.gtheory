@@ -78,8 +78,8 @@ user). Plus, the outputted data frame contains an explicit probability
 statement for each facet combination, specifying the probability of the
 G-coefficient being above an inputted threshold for that particular
 combination! The function even returns each of the variance components
-(known collectively as the G-study), both as point estimates and as
-credible intervals.
+(known collectively as the G-study), as point estimates, credible
+intervals, and percentages of the total variance.
 
 ``` r
 # Loading in the package
@@ -102,15 +102,15 @@ results <- dstudy_crossed2(data = sample_data, col.scores = "Score", col.subject
 kable(results$gstudy)
 ```
 
-|                     | Lower_Bound | Median | Upper_Bound |
-|:--------------------|------------:|-------:|------------:|
-| var_Person          |       2.179 |  7.406 |      30.559 |
-| var_Item            |       0.000 |  0.103 |       6.138 |
-| var_Occasion        |       0.001 |  0.438 |      17.159 |
-| var_Person_Item     |       0.000 |  0.050 |       0.576 |
-| var_Person_Occasion |       0.001 |  0.190 |       2.650 |
-| var_Item_Occasion   |       0.000 |  0.091 |       1.745 |
-| var_Error           |       0.222 |  0.441 |       0.932 |
+|                     | Lower_Bound | Median | Upper_Bound | Percent |
+|:--------------------|------------:|-------:|------------:|--------:|
+| var_Person          |       2.212 |  7.496 |      32.676 |    85.7 |
+| var_Item            |       0.000 |  0.096 |       5.397 |     1.1 |
+| var_Occasion        |       0.000 |  0.390 |      16.638 |     4.5 |
+| var_Person_Item     |       0.000 |  0.048 |       0.557 |     0.5 |
+| var_Person_Occasion |       0.001 |  0.185 |       2.795 |     2.1 |
+| var_Item_Occasion   |       0.000 |  0.087 |       1.612 |     1.0 |
+| var_Error           |       0.222 |  0.445 |       0.952 |     5.1 |
 
 ``` r
 kable(results$dstudy)
@@ -118,21 +118,21 @@ kable(results$dstudy)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.7) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.181 |  0.760 |       0.958 |       0.601 |
-|      2 |          1 |       0.201 |  0.815 |       0.974 |       0.685 |
-|      3 |          1 |       0.210 |  0.837 |       0.979 |       0.715 |
-|      4 |          1 |       0.214 |  0.849 |       0.983 |       0.729 |
-|      5 |          1 |       0.216 |  0.857 |       0.985 |       0.738 |
-|      1 |          2 |       0.271 |  0.842 |       0.976 |       0.748 |
-|      2 |          2 |       0.313 |  0.884 |       0.985 |       0.812 |
-|      3 |          2 |       0.331 |  0.900 |       0.988 |       0.832 |
-|      4 |          2 |       0.339 |  0.909 |       0.990 |       0.842 |
-|      5 |          2 |       0.346 |  0.915 |       0.992 |       0.849 |
-|      1 |          3 |       0.331 |  0.875 |       0.982 |       0.809 |
-|      2 |          3 |       0.384 |  0.911 |       0.989 |       0.863 |
-|      3 |          3 |       0.409 |  0.924 |       0.991 |       0.881 |
-|      4 |          3 |       0.423 |  0.932 |       0.993 |       0.890 |
-|      5 |          3 |       0.430 |  0.937 |       0.994 |       0.896 |
+|      1 |          1 |       0.172 |  0.771 |       0.961 |       0.622 |
+|      2 |          1 |       0.193 |  0.826 |       0.976 |       0.704 |
+|      3 |          1 |       0.200 |  0.849 |       0.981 |       0.730 |
+|      4 |          1 |       0.201 |  0.860 |       0.985 |       0.743 |
+|      5 |          1 |       0.202 |  0.867 |       0.987 |       0.751 |
+|      1 |          2 |       0.262 |  0.850 |       0.978 |       0.761 |
+|      2 |          2 |       0.302 |  0.891 |       0.986 |       0.821 |
+|      3 |          2 |       0.318 |  0.907 |       0.990 |       0.840 |
+|      4 |          2 |       0.327 |  0.916 |       0.991 |       0.849 |
+|      5 |          2 |       0.330 |  0.922 |       0.992 |       0.855 |
+|      1 |          3 |       0.323 |  0.882 |       0.984 |       0.821 |
+|      2 |          3 |       0.373 |  0.917 |       0.990 |       0.870 |
+|      3 |          3 |       0.396 |  0.929 |       0.992 |       0.886 |
+|      4 |          3 |       0.408 |  0.937 |       0.994 |       0.894 |
+|      5 |          3 |       0.417 |  0.942 |       0.994 |       0.899 |
 
 How cool is that! The user also could have specified prior distributions
 for any or all of the variance components through the `set_prior()`

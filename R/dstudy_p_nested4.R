@@ -18,7 +18,7 @@
 #' @param adapt_delta A value between 0 and 1. A larger value slows down the sampler but decreases the number of divergent transitions. 0.995 by default.
 #' @param max_treedepth Sets the maximum tree depth in the No U-Turn Sampler (NUTS). Set to 15 by default, but can be increased if tree depth is exceeded.
 #'
-#' @returns Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the quantiles argument). The dstudy dataframe contains the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
+#' @returns Two dataframes. The gstudy dataframe contains the lower bound, median, and upper bound of the distributions for each of the variance components in the G-study (according to the quantiles set by the user in the quantiles argument), as well as the percent of the total variance caused by each component. The dstudy dataframe contains the sequence of values to be tested for facet 1 and facet 2, the lower and upper quantiles of the reliability coefficient specified by the user, the median of the reliability coefficient, and the probability of the coefficient being above the inputted threshold.
 #' @export
 #'
 #' @details This function uses the "cmdstanr" backend for communication with STAN, so installation of the 'cmdstanr' package is required. To install 'cmdstanr', first run install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos"))), and then run cmdstanr::install_cmdstan(). To verify installation, run cmdstanr::cmdstan_version().
@@ -112,8 +112,11 @@ dstudy_p_nested4 <- function(data, col.scores, col.subjects, col.facet1, col.fac
     vci <- stats::quantile(var_df[[i]], probs = quantiles)
     variance_comps[i, 1] <- round(unname(vci[1]), rounded)
     variance_comps[i,3] <- round(unname(vci[2]), rounded)
-    variance_comps[i,2] <- round(stats::median(var_df[[i]]), rounded)
+    median <- round(stats::median(var_df[[i]]), rounded)
+    variance_comps[i,2] <- median
   }
+  variance_comps <- variance_comps %>%
+    dplyr::mutate(Percent = round((Median/sum(Median))*100, 1))
   rownames(variance_comps) <- colnames(var_df)
 
   # Laying out the final data frame.
