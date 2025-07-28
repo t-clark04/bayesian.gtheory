@@ -120,7 +120,7 @@ results$gstudy
 results$dstudy
 ```
 
-If we were to compare this output to the one we would have gotten with the default null priors, we would find that the credible interval for the model with weakly informative priors has slightly tighter credible intervals and that the median has shifted slightly in the direction of the prior distributions we specified.
+To keep this vignette concise, we will not compare this output to the one we would have gotten with default null priors. However, if we did, we would find that the model with weakly informative priors has tighter credible intervals and that the median has shifted slightly in the direction of the prior distributions we specified.
 
 ### Notes
 
