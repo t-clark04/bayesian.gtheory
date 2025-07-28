@@ -28,7 +28,7 @@ You can install the development version of bayesian.gtheory from [GitHub](https:
 
 ```{r, eval = FALSE}
 # install.packages("devtools")
-devtools::install_github("t-clark04/bayesian.gtheory")
+devtools::install_github("t-clark04/bayesian.gtheory", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
 **Note**: The `cmdstanr` package must also be installed prior to using any functions in the `bayesian.gtheory` package. To install `cmdstanr`...
