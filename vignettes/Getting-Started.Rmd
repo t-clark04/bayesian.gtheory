@@ -97,7 +97,7 @@ To see which of the functions in the package is suited for your study design, ch
 | dstudy_p_nested3() | *i* : (*p* x *o*) |
 | dstudy_p_nested4() | (*i* x *o*) : *p* |
 
-: In the study design column, *p* represents the objects of measurement, and *i* and *o* are arbitrary facets.
+(Note: *p* represents the objects of measurement, and *i* and *o* are arbitrary facets.)
 
 In the function dictionary, I see that my study design corresponds to the dstudy_p_nested2() function, so that's the function I'll be using to execute my Bayesian G- and D-studies.
 
