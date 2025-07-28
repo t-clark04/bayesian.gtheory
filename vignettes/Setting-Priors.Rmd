@@ -1,0 +1,133 @@
+---
+title: "Setting-Priors"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Setting-Priors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bayesian.gtheory)
+```
+
+The purpose of this vignette is to walk the user through the process of setting prior distributions on the variance components in the `bayesian.gtheory` package. 
+
+## Background
+For a more detailed explanation of both Generalizability Theory and Bayesian statistics, see the "Getting-Started" vignette. 
+
+In frequentist (i.e. traditional) Generalizability Theory, the G-study returns point estimates for each of the variance components in the study design, and the D-study returns point estimates for the index of dependability, $\Phi$, when testing out different numbers of facets, as specified by the researcher. Bayesian G-Theory is slightly different in that it results in full probability distributions for each of the variance components and reliability coefficients, which are summarized by statistics such as the median and lower/upper bound. These "posterior" probability distributions serve as a compromise between our prior beliefs and the observed data.
+
+In the "Getting-Started" vignette, no prior distribution was specified, and so the `bayesian.gtheory` package simply used the default null priors. This meant that the analysis run in that vignette was purely based on the observed data. However, what if you legitimately had some prior information about the values of one or all of the variance components before you began your analysis? Or what if you wanted to use weakly informative priors and simply restrict the components to be within reasonable limits? This can easily be done with the `bayesian.gtheory` package. Let's go!
+
+## Installing the Package and Its Dependencies
+Before you begin, make sure that you have the most recent version of the `bayesian.gtheory` installed from GitHub by running the following code in the console:
+
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("t-clark04/bayesian.gtheory", dependencies = TRUE, build_vignettes = TRUE)
+```
+
+Furthermore, it is imperative that you also insure proper installation of the `cmdstanr` package before you begin as well. To do so, follow these instructions:
+
+```{r, eval = FALSE}
+# First, run this line of code.
+install.packages("cmdstanr", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+# Then, run this line.
+cmdstanr::install_cmdstan(). 
+# Finally, verify successful installation with this line. 
+cmdstanr::cmdstan_version().
+```
+
+Now, we're ready to go!
+
+## Sample Procedure
+Start by loading in the data from your study, and take note of your particular study design. I'll load in my own data set here:
+
+```{r}
+Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
+Item <- c(rep(c(1,2,3), 2), rep(c(4,5,6),2), rep(c(7,8,9),2),
+          rep(c(10,11,12),2), rep(c(13,14,15),2))
+Occasion <- c(rep(c(1,1,1,2,2,2), 5))
+Score <- c(19,17,20,18,18,20,15,15,17,16,17,17,20,20,19,20,
+           20,20,11,14,12,12,13,12,18,19,18,19,18,19)
+sample_data <- data.frame(Person, Item, Occasion, Score)
+```
+
+In my mock dataset, items are nested within persons, and each person-item combination is then crossed with occasions. This means that I have an (i:p) x o study design. It is very important to be sure of your specific study design, since it determines which function in the `bayesian.gtheory` package you'll be using for your analysis.  
+
+Next, check the function dictionary below to determine which function to use based on your study design.
+
+| Function Name      | Study Design      |
+|--------------------|-------------------|
+| dstudy_crossed1()  | *p* x *i*         |
+| dstudy_crossed2()  | *p* x *i* x *o*   |
+| dstudy_nested1()   | *i* : *p*         |
+| dstudy_nested2()   | *i* : *o* : *p*   |
+| dstudy_p_nested1() | (*i* : *p*) x *o* |
+| dstudy_p_nested2() | *p* x (*i* : *o*) |
+| dstudy_p_nested3() | *i* : (*p* x *o*) |
+| dstudy_p_nested4() | (*i* x *o*) : *p* |
+
+(Note: *p* represents the objects of measurement, and *i* and *o* are arbitrary facets.)
+
+Because my data follows an (i:p) x o design, I will be using the `dstudy_p_nested1()` function. Don't worry if your study design corresponds to a different function -- the procedure is exactly the same for each function.
+
+Now that you know which function to use, pull up the help file by running `?your_function` in the console. For instance, I would run `?dstudy_p_nested1` in the console. Scroll down to the description of the `prior` parameter and find the `brms` syntax for your study design. For example, my study design is defined as "col.scores ~ (1|col.facet2) + (1|col.facet2:col.subjects) + (1|col.subjects/col.facet1)". 
+
+Before we set prior distributions for our variance components, we need to know which components exist for our study design. Thus, we will run the `get_prior` function from the `brms` package using the formula we just found (filling in the actual column names for col.subjects, col.scores, etc.) and the data frame we loaded in earlier. Just like this:
+
+```{r message = FALSE, warning =  FALSE}
+library(brms)
+formula1 <- Score ~ (1|Occasion) + (1|Occasion:Person) + (1|Person/Item)
+get_prior(formula = formula1, data = sample_data)
+```
+Except for our residual error, all of our variance components show up in the `group` column of the output. We see that for an (i:p) x o design, there is a variance component for Occasion, one for Person, one for the interaction between Occasion and Person, and one for the interaction between Person and Item. The residual error is displayed as "sigma" in the `class` column. 
+
+We notice that by default, `brms` fits student t distributions with very fat tails as prior distributions for each of our variance components. These are very, very weakly informative priors (so much so that I have referred to them as "null" priors up until now) based on the structure of the data. However, in this vignette, we would like to set our own prior distributions. 
+
+To do so, we'll be using the `set_prior` function from `brms` instead. To set a prior distribution for a particular component, we reference the component by specifying `class = "sd"` and `group = "Person"`, for instance, or `class = "sigma"` in the case of our residual variance. To specify the exact kind of prior distribution we would like to use, we pass in a character string like "normal(0, 1)" (normal distribution centered at 0 with a standard deviation of 1) or "uniform(-1, 1)" (uniform distribution from -1 to 1). See the `set_prior` help file for some examples of commonly used distributions, or check the Stan Functions Reference for a more exhaustive list (see https://mc-stan.org/docs/functions-reference/index.html). 
+
+For this sample analysis, let's say I used past studies or historical data to set weakly informative prior distributions for each of my variance components. For all components except for between-subjects variance, I'll set normal distributions centered at 0.5 with a standard deviation of 3. For between-subjects variance, I'll use a normal distribution centered at 9 with a standard deviation of 10. Be sure to assign the output of the `set_prior()` function to a variable so that it can be passed in to the eventual function call in the `bayesian.gtheory` package.
+
+```{r}
+my_priors <- c(
+  set_prior("normal(0.5,3)", class = "sd", group = "Occasion"),
+  set_prior("normal(0.5,3)", class = "sd", group = "Occasion:Person"),
+  set_prior("normal(0.5,3)", class = "sd", group = "Person:Item"),
+  set_prior("normal(9,10)", class = "sd", group = "Person"),
+  set_prior("normal(0.5,3)", class = "sigma")
+)
+```
+
+Now, we pass our variable, which I called `my_priors`, into the `bayesian.gtheory` function call and otherwise run the analysis like normal. Feel free to change any of the default parameter values in your function. I'll just keep the default ones here for simplicity's sake.
+
+```{r, echo = TRUE, results = "hide", message = FALSE, warning = FALSE}
+results <- dstudy_p_nested1(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,10,1), seq2 = seq(1,3,1), prior = my_priors)
+```
+Finally, let's take a look at our results:
+```{r}
+results$gstudy
+```
+```{r}
+results$dstudy
+```
+
+If we were to compare this output to the one we would have gotten with the default null priors, we would find that the credible interval for the model with weakly informative priors has slightly tighter credible intervals and that the median has shifted slightly in the direction of the prior distributions we specified.
+
+### Notes
+
+Thank you to Sven de Maeyer from the University of Antwerp for inspiring this Bayesian G-Theory package! See his blog post at <https://svendemaeyer.netlify.app/posts/2021-04-generalizability/>.
+
+The median is used as the measure of center for both the variance components and the reliability coefficients because these distributions are rarely normal (or even symmetric). The most appropriate measure of center for skewed distributions like these is the one which is most resistant to outliers, which is the median.
+
+Column names passed into the function must follow C++ naming conventions (i.e. only letters, numbers, or underscores; no spaces or hyphens!).
+
+
