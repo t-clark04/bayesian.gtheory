@@ -23,9 +23,9 @@ The purpose of this vignette is to walk the user through the process of setting 
 ## Background
 For a more detailed explanation of both Generalizability Theory and Bayesian statistics, see the "Getting-Started" vignette. 
 
-In frequentist (i.e. traditional) Generalizability Theory, the G-study returns point estimates for each of the variance components in the study design, and the D-study returns point estimates for the index of dependability, $\Phi$, when testing out different numbers of facets, as specified by the researcher. Bayesian G-Theory is slightly different in that it results in full probability distributions for each of the variance components and reliability coefficients, which are summarized by statistics such as the median and lower/upper bound. These "posterior" probability distributions serve as a compromise between our prior beliefs and the observed data.
+In frequentist (i.e. traditional) Generalizability Theory, the G-study returns point estimates for each of the variance components in the study design, and the D-study returns point estimates for the index of dependability, $\Phi$, when testing out different numbers of facets. Bayesian G-Theory is slightly different in that it results in full probability distributions for each of the variance components and reliability coefficients, which are summarized by statistics such as the median and lower/upper bound. These "posterior" probability distributions serve as a compromise between our prior beliefs and the observed data.
 
-In the "Getting-Started" vignette, no prior distribution was specified, and so the `bayesian.gtheory` package simply used the default null priors. This meant that the analysis run in that vignette was purely based on the observed data. However, what if you legitimately had some prior information about the values of one or all of the variance components before you began your analysis? Or what if you wanted to use weakly informative priors and simply restrict the components to be within reasonable limits? This can easily be done with the `bayesian.gtheory` package. Let's go!
+In the "Getting-Started" vignette, no prior distribution was specified, and so the `bayesian.gtheory` package simply used the default null priors. This meant that the analysis run in that vignette was purely based on the observed data. However, what if you legitimately had some prior information about the values of one or all of the variance components before you began your analysis? Or what if you simply wanted to restrict the components to be within reasonable limits (i.e. weakly informative priors)? This can easily be done within the `bayesian.gtheory` package. Let's go!
 
 ## Installing the Package and Its Dependencies
 Before you begin, make sure that you have the most recent version of the `bayesian.gtheory` installed from GitHub by running the following code in the console:
@@ -80,9 +80,9 @@ Next, check the function dictionary below to determine which function to use bas
 
 Because my data follows an (i:p) x o design, I will be using the `dstudy_p_nested1()` function. Don't worry if your study design corresponds to a different function -- the procedure is exactly the same for each function.
 
-Now that you know which function to use, pull up the help file by running `?your_function` in the console. For instance, I would run `?dstudy_p_nested1` in the console. Scroll down to the description of the `prior` parameter and find the `brms` syntax for your study design. For example, my study design is defined as "col.scores ~ (1|col.facet2) + (1|col.facet2:col.subjects) + (1|col.subjects/col.facet1)". 
+Now that you know which function to use, pull up the help file by running `?your_function` in the console. For instance, I would run `?dstudy_p_nested1` in the console. Scroll down to the description of the `prior` parameter and find the `brms` formula syntax for your study design. For example, my study design is defined as "col.scores ~ (1|col.facet2) + (1|col.facet2:col.subjects) + (1|col.subjects/col.facet1)". 
 
-Before we set prior distributions for our variance components, we need to know which components exist for our study design. Thus, we will run the `get_prior` function from the `brms` package using the formula we just found (filling in the actual column names for col.subjects, col.scores, etc.) and the data frame we loaded in earlier. Just like this:
+Before we set prior distributions for our variance components, we need to know which components exist for our study design. Thus, we will run the `get_prior` function from the `brms` package using the formula we just found (filling in the actual column names for col.subjects, col.scores, etc.) and the data frame we loaded in earlier. Here's what that looks like:
 
 ```{r message = FALSE, warning =  FALSE}
 library(brms)
@@ -91,11 +91,11 @@ get_prior(formula = formula1, data = sample_data)
 ```
 Except for our residual error, all of our variance components show up in the `group` column of the output. We see that for an (i:p) x o design, there is a variance component for Occasion, one for Person, one for the interaction between Occasion and Person, and one for the interaction between Person and Item. The residual error is displayed as "sigma" in the `class` column. 
 
-We notice that by default, `brms` fits student t distributions with very fat tails as prior distributions for each of our variance components. These are very, very weakly informative priors (so much so that I have referred to them as "null" priors up until now) based on the structure of the data. However, in this vignette, we would like to set our own prior distributions. 
+We notice that by default, `brms` fits Student-T distributions with fat tails as the prior distributions for each of our variance components. These are very, very weakly informative priors (so much so that I have referred to them as "null" priors up until now) based on the structure of the data. However, in this vignette, we would like to set our own prior distributions...
 
-To do so, we'll be using the `set_prior` function from `brms` instead. To set a prior distribution for a particular component, we reference the component by specifying `class = "sd"` and `group = "Person"`, for instance, or `class = "sigma"` in the case of our residual variance. To specify the exact kind of prior distribution we would like to use, we pass in a character string like "normal(0, 1)" (normal distribution centered at 0 with a standard deviation of 1) or "uniform(-1, 1)" (uniform distribution from -1 to 1). See the `set_prior` help file for some examples of commonly used distributions, or check the Stan Functions Reference for a more exhaustive list (see https://mc-stan.org/docs/functions-reference/index.html). 
+To do so, we'll be using the `set_prior` function from `brms`. To set a prior distribution for a particular component, we reference the component by specifying `class = "sd"` and `group = "Person"`, for instance, or `class = "sigma"` in the case of our residual variance. To specify the exact kind of prior distribution we would like to use, we pass in a character string like "normal(0, 1)" (normal distribution centered at 0 with a standard deviation of 1) or "uniform(-1, 1)" (uniform distribution from -1 to 1). See the `set_prior` help file for some examples of commonly used distributions, or check the Stan Functions Reference for a more exhaustive list (see https://mc-stan.org/docs/functions-reference/index.html). 
 
-For this sample analysis, let's say I used past studies or historical data to set weakly informative prior distributions for each of my variance components. For all components except for between-subjects variance, I'll set normal distributions centered at 0.5 with a standard deviation of 3. For between-subjects variance, I'll use a normal distribution centered at 9 with a standard deviation of 10. Be sure to assign the output of the `set_prior()` function to a variable so that it can be passed in to the eventual function call in the `bayesian.gtheory` package.
+For this sample analysis, we'll say I used past studies or historical data to set weakly informative prior distributions for each of my variance components. For all components except for between-subjects variance, I'll set normal distributions centered at 0.5 with a standard deviation of 3. For between-subjects variance, I'll use a normal distribution centered at 9 with a standard deviation of 10. Be sure to assign the output of the `set_prior()` function to a variable so that it can be passed in to the eventual function call in the `bayesian.gtheory` package.
 
 ```{r}
 my_priors <- c(
@@ -107,10 +107,12 @@ my_priors <- c(
 )
 ```
 
-Now, we pass our variable, which I called `my_priors`, into the `bayesian.gtheory` function call and otherwise run the analysis like normal. Feel free to change any of the default parameter values in your function. I'll just keep the default ones here for simplicity's sake.
+Now, we pass our variable, which I called `my_priors`, into the `prior` parameter of the `bayesian.gtheory` function call and otherwise run the analysis like normal. Feel free to change any of the default parameter values in your function. I'll just keep the default ones here for simplicity's sake.
 
 ```{r, echo = TRUE, results = "hide", message = FALSE, warning = FALSE}
-results <- dstudy_p_nested1(data = sample_data, col.scores = "Score", col.subjects = "Person", col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,10,1), seq2 = seq(1,3,1), prior = my_priors)
+results <- dstudy_p_nested1(data = sample_data, col.scores = "Score", col.subjects = "Person",
+                            col.facet1 = "Item", col.facet2 = "Occasion", seq1 = seq(1,10,1), 
+                            seq2 = seq(1,3,1), prior = my_priors)
 ```
 Finally, let's take a look at our results:
 ```{r}
@@ -120,7 +122,7 @@ results$gstudy
 results$dstudy
 ```
 
-To keep this vignette concise, we will not compare this output to the one we would have gotten with default null priors. However, if we did, we would find that the model with weakly informative priors has tighter credible intervals and that the median has shifted slightly in the direction of the prior distributions we specified.
+To keep this vignette concise, we will not compare this output to the one we would have obtained with the default null priors. However, if we did, we would find that the model with weakly informative priors has tighter credible intervals and that the median has shifted slightly in the direction of the prior distributions we specified.
 
 ### Notes
 
