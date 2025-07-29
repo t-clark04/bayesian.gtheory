@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(bayesian.gtheory)
 ```
 
-Welcome to the world of Bayesian G-Theory! The `bayesian.gtheory` package is a user-created resource for executing G- and D-studies from Generalizability Theory through a Bayesian framework. It contains highly customizable functions for every possible one- and two-facet random study design to test the reliability of your data of interest. This vignette will walk the user through the general `bayesian.gtheory` workflow and prepare the user to try the package out for themselves. Thanks for checking out `bayesian.gtheory`!
+Welcome to the world of Bayesian G-Theory! The `bayesian.gtheory` package is a user-created resource for executing G- and D-studies from Generalizability Theory through a Bayesian framework. It contains highly customizable functions for every possible one- and two-facet random study design to test the reliability of your data of interest. This vignette will walk the user through the general `bayesian.gtheory` workflow and prepare the user to try out the package for themselves. Thanks for checking out `bayesian.gtheory`!
 
 ## Background
 
@@ -32,19 +32,19 @@ Most researchers, however, are more interested in the second step of the G-Theor
 
 ### Bayesian Statistics
 
-Bayesian statistics, on the other hand, is a branch of statistics based on Bayes' Theorem, which is a framework for updating our beliefs about a hypothesis, parameter, event, etc. when new information arises. The output obtained from a Bayesian analysis is a full "posterior" probability distribution, which serves as a compromise between our prior beliefs and the observed data.
+Bayesian statistics is a branch of statistics based on Bayes' Theorem, which is a framework for updating our beliefs about a hypothesis, parameter, event, etc. when new information arises. The output obtained from a Bayesian analysis is a full "posterior" probability distribution, which serves as a compromise between our prior beliefs and the observed data.
 
 This Bayesian framework is advantageous for a number of reasons. First, the ability to incorporate expert knowledge or historical data into the model as a prior distribution allows the researcher to eliminate any unnecessary uncertainty in the parameter estimates, which is especially useful in the context of small sample sizes and/or small effects. While this vignette opts to keep the default null priors in the sample analysis that follows, a separate vignette called "Setting-Priors" walks the user through the process of setting informative priors in `bayesian.gtheory`.
 
-Additionally, the estimation of full probability distributions, rather than point estimates, permits us to make direct probability statements about the value(s) of interest, as well as construct 95% *credible* intervals for model parameters and predicted values. Not only does this make decision-making much more intuitive, but it also permits us to bypass certain assumptions in the construction of frequentist confidence intervals in G-Theory, such as the unrealistic assumption of multivariate normality.
+Additionally, the estimation of full probability distributions, rather than point estimates, permits us to make direct probability statements about the value(s) of interest, as well as construct 95% *credible* intervals for model parameters and predicted values. Not only does this make decision-making much more intuitive, but it also permits us to bypass certain assumptions in the construction of frequentist confidence intervals, such as the unrealistic assumption of multivariate normality.
 
 ### Putting It All Together: Bayesian G-Theory
 
-When a reliability analysis from Generalizability Theory is executed through a Bayesian framework, the main difference is simply how the results are displayed. Instead of receiving point estimates for each of the variance components, as well as the index of dependability, the user obtains summary statistics to encapsulate the full posterior probability distributions. For both the variance components and the indices of dependability, the output contains a lower and upper bound on the value of interest (set as the 95% credible interval, by default) as well as the median of the distribution. The output of the D-study also displays the probability of $\Phi$ being above a certain user-inputted threshold (set to 0.7 by default).
+When a reliability analysis from Generalizability Theory is executed through a Bayesian framework, the main difference lies in the way the results are displayed. Instead of receiving point estimates for each of the variance components, as well as the index of dependability, the user obtains summary statistics to encapsulate each posterior probability distribution. For both the variance components and the indices of dependability, the output contains a lower and upper bound on the value of interest (set as the 95% credible interval, by default) as well as the median of the distribution. The output of the D-study also displays the probability of $\Phi$ being above a certain user-inputted threshold (set to 0.7 by default).
 
 Another main difference, as mentioned before, is the ability to set prior distributions for each of the variance components if the researcher is so inclined. An outline of this process is detailed in the "Setting-Priors" vignette, so do check that out if you are interested. Otherwise, keeping the default null priors, as we do in the following analysis, is standard protocol.
 
-Finally, the user has the option to customize the settings of the Markov Chain Monte Carlo (MCMC) random sampling method for estimating the underlying probability distributions. In the `bayesian.gtheory` package, the user can alter the number of iterations in the burn-in period and total number of iterations per chain, the number of Markov chains and the number of cores to use when executing the chains in parallel, and two additional parameters called adapt_delta and max_treedepth to prevent any divergent transitions in the sampling process. If the user is unfamiliar with MCMC sampling, the default settings will almost certainly suffice.
+Finally, the user has the option to customize the settings of the Markov Chain Monte Carlo (MCMC) sampling method, which estimates the underlying probability distributions. In the `bayesian.gtheory` package, the user can alter the number of iterations per chain (both burn-in and total), the number of Markov chains, and the number of cores for parallel processing. Users also have the option of tuning two additional parameters called adapt_delta and max_treedepth to reduce the risk of divergent transitions in the sampling process. If the user is unfamiliar with MCMC sampling, the default settings will almost certainly suffice.
 
 ## Installing the Package and Its Dependencies
 
@@ -70,7 +70,7 @@ Once you've completed these two steps, you're ready to go!
 
 ## Sample Analysis
 
-Start by loading in the data from your study. Make sure before you begin your analysis that your data frame contains a column for your outcome variable of interest (called scores in the documentation), a column for your subjects (or general objects of measurement), and one or more columns for facets (like raters, trials, occasion, etc.). Also, take note of the format of your study. Is it a two-facet, fully crossed design? Are any of your facets nested? These are important questions that will dictate which function in the `bayesian.gtheory` package you will ultimately use. I'll start by loading in my own mock dataset:
+Start by loading in the data from your study. Before you begin your analysis, make sure that your data frame contains a column for your outcome variable of interest (called scores in the documentation), a column for your subjects (or general objects of measurement), and one or more columns for facets (like raters, trials, occasion, etc.). Also, take note of the format of your study. Is it a one-facet or a two-facet design? Are any of your facets nested, or are they all crossed? These are important questions that will dictate which function in the `bayesian.gtheory` package you will ultimately use. I'll start by loading in my own mock dataset:
 
 ```{r}
 Person <- c(rep(1, 6), rep(2,6), rep(3,6), rep(4,6), rep(5,6))
@@ -101,7 +101,7 @@ To see which of the functions in the package is suited for your study design, ch
 
 In the function dictionary, I see that my study design corresponds to the dstudy_p_nested2() function, so that's the function I'll be using to execute my Bayesian G- and D-studies.
 
-To run the analysis, pass the name of the data frame into the `data` parameter, then specify the column names (as strings!) for each of `col.scores`, `col.subjects`, `col.facet1`, and `col.facet2`. After that, specify the sequence of values to test out for facet1 and facet2 in the D-study through the `seq1` and `seq2` parameters. The rest of the function arguments can be kept as their default values, but for the sake of demonstration, I'll also set the probability threshold to 0.6 instead, and I'll bump up the total number of iterations in the MCMC chain to 6000 through the `iter` parameter. As mentioned earlier, the `prior` will remain `NULL` for this analysis, but head over to the "Setting-Priors" vignette for instructions on how to set prior distributions.
+To run the analysis, pass the data frame into the `data` parameter, then specify the column names (as strings!) for each of `col.scores`, `col.subjects`, `col.facet1`, and `col.facet2`. After that, enter two sequences of values to test out for facet1 and facet2 in the D-study through the `seq1` and `seq2` parameters. The rest of the function arguments can be kept as their default values, but for the sake of demonstration, I'll also set the probability threshold to 0.6 instead, and I'll bump up the total number of iterations in the MCMC chain to 6000 through the `iter` parameter. As mentioned earlier, the `prior` will remain `NULL` for this analysis, but head over to the "Setting-Priors" vignette for instructions on how to set prior distributions.
 
 To obtain descriptions of all the parameters for your function of interest, simply pull up the help file by running `?your_function`. For instance, in my case, I would run `?dstudy_p_nested2` for more information.
 
@@ -121,7 +121,7 @@ results$gstudy
 results$dstudy
 ```
 
-As you can see, by utilizing a Bayesian framework, we can make probability statements and construct  95% credible intervals that give the researcher a better idea of the uncertainty around their variance components and probability coefficients, thereby permitting them to make more informed decisions as a result.
+As you can see, by utilizing a Bayesian framework, we can make direct probability statements and construct 95% credible intervals around both the variance components and the corresponding reliability coefficients. This gives the researcher a better idea of the uncertainty around their reliability metrics, thereby permitting them to make more informed decisions as a result.
 
 ### Notes
 
