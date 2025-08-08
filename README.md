@@ -58,9 +58,9 @@ and *i* and *o* are arbitrary facets.
 Let’s say you did a study in which you gave five different students a
 test with 3 different items on it, and you gave them that test on two
 separate occasions. You want to know the reliability with which you
-could generalize to each student’s true score by averaging over x number
-of items and y number of occasions. This is called a reliability
-analysis.
+could generalize to each student’s true score by averaging over *x*
+number of items and *y* number of occasions. This is called a
+reliability analysis.
 
 In regular (i.e. frequentist) Generalizability Theory, the result of
 such a reliability analysis is given as a point estimate – the
@@ -104,13 +104,13 @@ kable(results$gstudy)
 
 |                     | Lower_Bound | Median | Upper_Bound | Percent |
 |:--------------------|------------:|-------:|------------:|--------:|
-| var_Person          |       2.285 |  7.443 |      31.270 |    85.8 |
-| var_Item            |       0.000 |  0.094 |       5.332 |     1.1 |
-| var_Occasion        |       0.000 |  0.381 |      17.092 |     4.4 |
-| var_Person_Item     |       0.000 |  0.048 |       0.532 |     0.6 |
-| var_Person_Occasion |       0.001 |  0.176 |       2.368 |     2.0 |
-| var_Item_Occasion   |       0.000 |  0.084 |       1.585 |     1.0 |
-| var_Error           |       0.225 |  0.444 |       0.963 |     5.1 |
+| var_Person          |       2.179 |  7.342 |      31.196 |    85.6 |
+| var_Item            |       0.000 |  0.095 |       6.158 |     1.1 |
+| var_Occasion        |       0.001 |  0.375 |      17.786 |     4.4 |
+| var_Person:Item     |       0.000 |  0.050 |       0.565 |     0.6 |
+| var_Person:Occasion |       0.001 |  0.186 |       2.626 |     2.2 |
+| var_Item:Occasion   |       0.000 |  0.086 |       1.707 |     1.0 |
+| var_Error           |       0.225 |  0.443 |       0.956 |     5.2 |
 
 ``` r
 kable(results$dstudy)
@@ -118,21 +118,21 @@ kable(results$dstudy)
 
 | n_Item | n_Occasion | Lower_Bound | Median | Upper_Bound | P(G \> 0.7) |
 |-------:|-----------:|------------:|-------:|------------:|------------:|
-|      1 |          1 |       0.197 |  0.775 |       0.961 |       0.629 |
-|      2 |          1 |       0.220 |  0.830 |       0.975 |       0.710 |
-|      3 |          1 |       0.228 |  0.852 |       0.981 |       0.739 |
-|      4 |          1 |       0.231 |  0.864 |       0.984 |       0.753 |
-|      5 |          1 |       0.233 |  0.871 |       0.986 |       0.760 |
-|      1 |          2 |       0.295 |  0.853 |       0.977 |       0.768 |
-|      2 |          2 |       0.339 |  0.895 |       0.986 |       0.824 |
-|      3 |          2 |       0.357 |  0.910 |       0.989 |       0.845 |
-|      4 |          2 |       0.364 |  0.919 |       0.991 |       0.855 |
-|      5 |          2 |       0.371 |  0.924 |       0.992 |       0.861 |
-|      1 |          3 |       0.351 |  0.884 |       0.983 |       0.821 |
-|      2 |          3 |       0.414 |  0.918 |       0.990 |       0.872 |
-|      3 |          3 |       0.438 |  0.932 |       0.992 |       0.891 |
-|      4 |          3 |       0.453 |  0.939 |       0.993 |       0.900 |
-|      5 |          3 |       0.459 |  0.944 |       0.994 |       0.904 |
+|      1 |          1 |       0.171 |  0.767 |       0.959 |       0.617 |
+|      2 |          1 |       0.186 |  0.822 |       0.974 |       0.696 |
+|      3 |          1 |       0.192 |  0.845 |       0.980 |       0.726 |
+|      4 |          1 |       0.195 |  0.856 |       0.984 |       0.739 |
+|      5 |          1 |       0.196 |  0.864 |       0.985 |       0.748 |
+|      1 |          2 |       0.259 |  0.848 |       0.977 |       0.756 |
+|      2 |          2 |       0.298 |  0.889 |       0.986 |       0.817 |
+|      3 |          2 |       0.311 |  0.906 |       0.989 |       0.839 |
+|      4 |          2 |       0.318 |  0.914 |       0.991 |       0.849 |
+|      5 |          2 |       0.321 |  0.920 |       0.992 |       0.855 |
+|      1 |          3 |       0.315 |  0.880 |       0.983 |       0.811 |
+|      2 |          3 |       0.373 |  0.915 |       0.990 |       0.865 |
+|      3 |          3 |       0.392 |  0.929 |       0.992 |       0.883 |
+|      4 |          3 |       0.403 |  0.936 |       0.993 |       0.892 |
+|      5 |          3 |       0.409 |  0.940 |       0.994 |       0.898 |
 
 How cool is that! The user also could have specified prior distributions
 for any or all of the variance components through the `set_prior()`
