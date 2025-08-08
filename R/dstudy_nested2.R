@@ -117,7 +117,11 @@ dstudy_nested2 <- function(data, col.scores, col.subjects, col.facet1, col.facet
   }
   variance_comps <- variance_comps %>%
     dplyr::mutate(Percent = round((Median/sum(Median))*100, 1))
-  rownames(variance_comps) <- colnames(var_df)
+
+  row1 <- paste0("var_", col.subjects)
+  row2 <- paste0("var_", col.subjects, ":", col.facet2)
+  row3 <- "var_Error"
+  rownames(variance_comps) <- c(row1, row2, row3)
 
   # Laying out the final data frame.
   final_df <- expand.grid(seq1, seq2)

@@ -128,7 +128,15 @@ dstudy_crossed2 <- function(data, col.scores, col.subjects, col.facet1, col.face
   }
   variance_comps <- variance_comps %>%
     dplyr::mutate(Percent = round((Median/sum(Median))*100, 1))
-  rownames(variance_comps) <- colnames(var_df)
+
+  row1 <- paste0("var_", col.subjects)
+  row2 <- paste0("var_", col.facet1)
+  row3 <- paste0("var_", col.facet2)
+  row4 <- paste0("var_", col.subjects, ":", col.facet1)
+  row5 <- paste0("var_", col.subjects, ":", col.facet2)
+  row6 <- paste0("var_", col.facet1, ":", col.facet2)
+  row7 <- "var_Error"
+  rownames(variance_comps) <- c(row1, row2, row3, row4, row5, row6, row7)
 
   # Laying out the final data frame.
   final_df <- expand.grid(seq1, seq2)

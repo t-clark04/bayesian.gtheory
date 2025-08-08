@@ -104,7 +104,10 @@ dstudy_nested1 <- function(data, col.scores, col.subjects, col.facet, seq, thres
   }
   variance_comps <- variance_comps %>%
     dplyr::mutate(Percent = round((Median/sum(Median))*100, 1))
-  rownames(variance_comps) <- colnames(var_df)
+
+  row1 <- paste0("var_", col.subjects)
+  row2 <- "var_Error"
+  rownames(variance_comps) <- c(row1, row2)
 
 
   # Laying out the final D-study data frame.
